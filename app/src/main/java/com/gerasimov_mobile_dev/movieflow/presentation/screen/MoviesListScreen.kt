@@ -2,6 +2,7 @@ package com.gerasimov_mobile_dev.movieflow.presentation.screen
 
 import android.R
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
@@ -32,10 +33,10 @@ import com.gerasimov_mobile_dev.movieflow.presentation.state.UiState
 import com.google.android.material.progressindicator.CircularProgressIndicator
 
 
-
 @Composable
 fun MoviesListScreen(
-    viewModel: MoviesViewModel = hiltViewModel()
+    viewModel: MoviesViewModel = hiltViewModel(),
+    onMovieClick: (Int) -> Unit
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     Log.d("DTO", state.toString())
@@ -55,7 +56,7 @@ fun MoviesListScreen(
             Column(
                 modifier = Modifier.fillMaxSize(),
 
-            ) {
+                ) {
                 if (state.movies.isEmpty()) {
                     Text("Фильмов нет")
                 } else {
@@ -65,7 +66,7 @@ fun MoviesListScreen(
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         items(state.movies) { movie ->
-                            MovieItem(movie = movie)
+                            MovieItem(movie = movie, onClick = { onMovieClick(movie.id) })
                         }
                     }
                 }
@@ -117,14 +118,16 @@ private fun ErrorScreen(message: String, onRetry: () -> Unit) {
 }
 
 @Composable
-fun MovieItem(movie: Movie) {
+fun MovieItem(movie: Movie, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(8.dp)
+            .clickable { onClick() },
         shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+
+        ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -142,7 +145,7 @@ fun MovieItem(movie: Movie) {
                 contentScale = ContentScale.Crop,
                 placeholder = painterResource(id = R.drawable.ic_menu_gallery),
                 error = painterResource(
-                    id = com.gerasimov_mobile_dev.movieflow.R.drawable.ic_no_poster
+                    id = com.gerasimov_mobile_dev.movieflow.R.drawable.ic_no_poster2
                 )
             )
 
@@ -177,12 +180,13 @@ fun MovieItem(movie: Movie) {
 
                 Spacer(modifier = Modifier.height(8.dp))
                 if (!movie.shortDescription.isNullOrBlank()) {
-                Text(
-                    text = movie.shortDescription,
-                    style = MaterialTheme.typography.bodyMedium,
-                    maxLines = 3,
-                    overflow = TextOverflow.Ellipsis
-                )}
+                    Text(
+                        text = movie.shortDescription,
+                        style = MaterialTheme.typography.bodyMedium,
+                        maxLines = 3,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(8.dp))
 

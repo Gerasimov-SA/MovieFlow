@@ -83,7 +83,7 @@ dependencies {
     implementation(libs.moshi)
     ksp(libs.moshi.kotlin.codegen)
     implementation(libs.coil.compose)
-    implementation("com.squareup.moshi:moshi-kotlin:1.15.2")
+    implementation(libs.moshi.kotlin)
 
     // Database
     implementation(libs.androidx.room.runtime)
