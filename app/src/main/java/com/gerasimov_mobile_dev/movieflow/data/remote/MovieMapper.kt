@@ -12,7 +12,7 @@ fun MovieDto.toDomain(): Movie {
         movieLength = movieLength,
         ageRating = ageRating ?: "—",
         rating = rating?.imdb ?: rating?.kp ?: 0.0,
-        poster = poster?.previewUrl,
+        poster = poster?.previewUrl ?: poster?.url  ,
         backdrop = backdrop?.url,
         genres = genres?.joinToString(", ") { it.name } ?: "—",
         countries = countries?.joinToString(", ") { it.name } ?: "—"

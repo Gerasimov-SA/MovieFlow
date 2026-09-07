@@ -20,7 +20,7 @@ data class MoviesUiState(
 
 @HiltViewModel
 class MoviesViewModel @Inject constructor(
-    val repository: MoviesRepository//Не MoviesRepositoryImpl потому что hilt сам находит эту реализацию(но ее нужно забиндить в AppModule)
+    private val repository: MoviesRepository//Не MoviesRepositoryImpl потому что hilt сам находит эту реализацию(но ее нужно забиндить в AppModule)
 ) : ViewModel(){
 
     val uiState = repository.getMovies()   //берем поток Flow от репозитория в котором мы заэмители список фильмов

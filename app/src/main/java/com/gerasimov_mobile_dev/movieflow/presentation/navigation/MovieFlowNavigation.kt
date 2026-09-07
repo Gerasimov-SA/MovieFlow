@@ -1,6 +1,8 @@
 package com.gerasimov_mobile_dev.movieflow.presentation.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.HiltViewModelFactory
+import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -15,23 +17,26 @@ fun MovieFlowNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = Routes.MOVIES
+        startDestination = "movies"
     ) {
-        composable(Routes.MOVIES) {
+        composable("movies") {
             MoviesListScreen(
                 onMovieClick = { movieId ->
-                    navController.navigate(Routes.movieDetail(movieId))
+                    navController.navigate("movie/$movieId")
                 }
             )
         }
         composable(
-            route = Routes.MOVIE_DETAIL,
+            route = "movie/{movieId}",
             arguments = listOf(navArgument("movieId") { type = NavType.IntType })
         ) { backStackEntry ->
             val movieId = backStackEntry.arguments?.getInt("movieId") ?: 0
+            val handle = SavedStateHandle(mapOf("movieId" to movieId))
+
             MovieDetailsScreen(
                 movieId = movieId,
-                onBackClick = { navController.popBackStack() }
+                onBackClick = { navController.popBackStack()
+                    },
             )
         }
     }

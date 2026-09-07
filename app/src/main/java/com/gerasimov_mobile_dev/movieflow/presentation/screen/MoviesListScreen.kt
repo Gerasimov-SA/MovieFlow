@@ -1,6 +1,5 @@
 package com.gerasimov_mobile_dev.movieflow.presentation.screen
 
-import android.R
 import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -20,19 +19,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
-import com.gerasimov_mobile_dev.movieflow.data.remote.MovieDto
 import com.gerasimov_mobile_dev.movieflow.domain.model.Movie
 import com.gerasimov_mobile_dev.movieflow.presentation.MoviesViewModel
 import com.gerasimov_mobile_dev.movieflow.presentation.component.ErrorScreen
-import com.gerasimov_mobile_dev.movieflow.presentation.state.UiState
-import com.google.android.material.progressindicator.CircularProgressIndicator
-
-
 @Composable
 fun MoviesListScreen(
     viewModel: MoviesViewModel = hiltViewModel(),
@@ -66,6 +59,7 @@ fun MoviesListScreen(
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         items(state.movies) { movie ->
+
                             MovieItem(movie = movie, onClick = { onMovieClick(movie.id) })
                         }
                     }
@@ -143,7 +137,7 @@ fun MovieItem(movie: Movie, onClick: () -> Unit) {
                     .size(100.dp)
                     .clip(RoundedCornerShape(8.dp)),
                 contentScale = ContentScale.Crop,
-                placeholder = painterResource(id = R.drawable.ic_menu_gallery),
+                placeholder = painterResource(id = android.R.drawable.ic_menu_gallery),
                 error = painterResource(
                     id = com.gerasimov_mobile_dev.movieflow.R.drawable.ic_no_poster2
                 )
