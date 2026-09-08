@@ -3,13 +3,17 @@ package com.gerasimov_mobile_dev.movieflow.presentation
 import androidx.compose.runtime.MutableState
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.gerasimov_mobile_dev.movieflow.data.repository.MoviesRepository
 import com.gerasimov_mobile_dev.movieflow.domain.model.Movie
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class DetailsUiState(
@@ -35,18 +39,21 @@ class MovieDetailsViewModel @Inject constructor(
         if (movieId <= 0) {
             _uiState.update { it.copy(error = "Некорректный ID фильма") }
         } else getDetails()
-
     }
 
     fun getDetails() {
         _uiState.update {
-            it.copy(isLoading = true,error = null)
+            it.copy(isLoading = true, error = null)
         }
-        try {
-            val data = repository.getMovieDetails(movieId)
-            _uiState.update { it.copy(movie = data, isLoading = false) }
-        } catch (e: Exception) {
-            _uiState.update { it.copy(error = e.message ?: "Не удалось загрузить фильм") }
+        viewModelScope.launch {
+            try {
+                val data = repository.getMovieDetails(movieId)
+                _uiState.update { it.copy(movie = data, isLoading = false) }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                _uiState.update { it.copy(error = e.message ?: "Не удалось загрузить фильм") }
+            }
         }
 
 

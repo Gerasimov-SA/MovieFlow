@@ -32,7 +32,6 @@ fun MoviesListScreen(
     onMovieClick: (Int) -> Unit
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    Log.d("DTO", state.toString())
     when {
         state.isLoading && state.movies.isEmpty() -> {
             // Экран загрузки (первый вход)
