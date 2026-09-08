@@ -13,5 +13,15 @@ import androidx.compose.ui.unit.sp
 
 
 @Composable
-fun ErrorScreen() {
+fun ErrorScreen(message: String, onRetry: () -> Unit) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("Ошибка: $message")
+        Button(onClick = onRetry, modifier = Modifier.padding(top = 16.dp)) {
+            Text("Попробовать снова")
+        }
+    }
 }

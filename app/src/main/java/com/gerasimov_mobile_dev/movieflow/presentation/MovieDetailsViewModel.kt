@@ -28,20 +28,22 @@ class MovieDetailsViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    val movieId: Int = savedStateHandle.get("movieId") ?: 0
-
     private val _uiState =
         MutableStateFlow(DetailsUiState())//создаем изменяемый горячий поток в котором лежит состояние, делаем private чтобы менять можно было только внутри MovieDetailsViewModel, теперь никто из других слоев не сможет его менять
     val uiState: StateFlow<DetailsUiState> =
         _uiState.asStateFlow() //Здесь из потока ui_state делаем неизменяемый горячий поток. Сюда будем записывать уже измененное состояние и отдавать дрпугим слоям для чтения
-
+    val movieId: Int = savedStateHandle.get("movieId") ?: 0
     init {
-        if (movieId <= 0) {
-            _uiState.update { it.copy(error = "Некорректный ID фильма") }
-        } else getDetails()
+        if (movieId > 0) {
+            getDetails(movieId)
+        } else {
+            _uiState.update {
+                it.copy(error = "Некорректный ID фильма")
+            }
+        }
     }
 
-    fun getDetails() {
+    fun getDetails(movieId: Int) {
         _uiState.update {
             it.copy(isLoading = true, error = null)
         }
@@ -58,5 +60,6 @@ class MovieDetailsViewModel @Inject constructor(
 
 
     }
+    fun refresh() {}
 
 }

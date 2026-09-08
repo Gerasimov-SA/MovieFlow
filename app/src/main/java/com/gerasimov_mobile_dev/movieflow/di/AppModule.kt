@@ -25,6 +25,5 @@ object AppModule {
         @ApplicationContext context: Context
     ): MoviesRepository = MoviesRepositoryImpl(
         api = api,
-        context = context
     )
 }

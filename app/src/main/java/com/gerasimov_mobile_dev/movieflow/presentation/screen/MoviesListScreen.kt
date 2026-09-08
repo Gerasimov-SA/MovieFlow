@@ -40,7 +40,7 @@ fun MoviesListScreen(
 
         state.error != null -> {
             // Экран ошибки
-            ErrorScreen()
+            ErrorScreen(state.error!!, {viewModel.refresh()})
         }
 
         else -> {
@@ -96,19 +96,7 @@ fun BoxScreen(text: String) {
     }
 }
 
-@Composable
-private fun ErrorScreen(message: String, onRetry: () -> Unit) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text("Ошибка: $message")
-        Button(onClick = onRetry, modifier = Modifier.padding(top = 16.dp)) {
-            Text("Попробовать снова")
-        }
-    }
-}
+
 
 @Composable
 fun MovieItem(movie: Movie, onClick: () -> Unit) {
