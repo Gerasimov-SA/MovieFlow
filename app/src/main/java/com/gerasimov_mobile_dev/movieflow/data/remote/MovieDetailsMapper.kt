@@ -1,6 +1,5 @@
-package com.gerasimov_mobile_dev.movieflow.data.remote.common
+package com.gerasimov_mobile_dev.movieflow.data.remote
 
-import com.gerasimov_mobile_dev.movieflow.data.remote.MovieDetailsDto
 import com.gerasimov_mobile_dev.movieflow.domain.model.Movie
 import com.gerasimov_mobile_dev.movieflow.domain.model.Trailer
 

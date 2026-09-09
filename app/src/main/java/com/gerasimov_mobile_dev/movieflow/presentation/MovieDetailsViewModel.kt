@@ -9,12 +9,14 @@ import com.gerasimov_mobile_dev.movieflow.data.repository.MoviesRepository
 import com.gerasimov_mobile_dev.movieflow.domain.model.Movie
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 data class DetailsUiState(
     val isLoading: Boolean = false,
@@ -48,6 +50,7 @@ class MovieDetailsViewModel @Inject constructor(
             it.copy(isLoading = true, error = null)
         }
         viewModelScope.launch {
+            delay(15000.milliseconds)
             try {
                 val data = repository.getMovieDetails(movieId)
                 _uiState.update { it.copy(movie = data, isLoading = false) }

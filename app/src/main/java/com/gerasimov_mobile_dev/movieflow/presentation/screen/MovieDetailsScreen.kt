@@ -31,6 +31,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -39,6 +40,9 @@ import coil.compose.AsyncImage
 import com.gerasimov_mobile_dev.movieflow.domain.model.Movie
 import com.gerasimov_mobile_dev.movieflow.presentation.MovieDetailsViewModel
 import com.gerasimov_mobile_dev.movieflow.presentation.component.ErrorScreen
+import com.gerasimov_mobile_dev.movieflow.presentation.component.MovieDetailsSkeletonContent
+import com.gerasimov_mobile_dev.movieflow.presentation.component.MovieDetailsSkeletonHeader
+import com.gerasimov_mobile_dev.movieflow.presentation.component.TestAnimation
 
 @Composable
 fun MovieDetailsScreen(
@@ -50,11 +54,14 @@ fun MovieDetailsScreen(
 
     when {
         state.isLoading && state.movie == null -> {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+            // Показываем скелетон
+            Column(
+                modifier = modifier.fillMaxSize()
             ) {
-                CircularProgressIndicator()
+                MovieDetailsSkeletonHeader()
+                MovieDetailsSkeletonContent()
+
+
             }
         }
 
@@ -266,3 +273,4 @@ private fun InfoLine(title: String, value: String) {
         Text(text = value, fontSize = 15.sp)
     }
 }
+

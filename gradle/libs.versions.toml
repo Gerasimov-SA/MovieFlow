@@ -1,6 +1,7 @@
 [versions]
 activityCompose = "1.9.0"
 agp = "9.3.2"
+animation = "1.6.2"
 hiltAndroid = "2.60.1"
 kotlin = "2.4.10"
 
@@ -27,6 +28,7 @@ hilt-nav-compose = "1.1.0"
 
 [libraries]
 activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+androidx-animation = { module = "androidx.compose.animation:animation", version.ref = "animation" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
 
