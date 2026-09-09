@@ -60,6 +60,9 @@ class MovieDetailsViewModel @Inject constructor(
 
 
     }
-    fun refresh() {}
+    fun refresh() {
+        val movieId = savedStateHandle.get<Int>("movieId") ?: 0
+        if (movieId > 0) getDetails(movieId)
+    }
 
 }

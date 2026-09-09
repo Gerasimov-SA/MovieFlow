@@ -15,7 +15,10 @@ fun MovieDto.toDomain(): Movie {
         poster = poster?.previewUrl ?: poster?.url,
         backdrop = backdrop?.url,
         genres = genres.orEmpty().joinToString(", ") { it.name ?: "" }.ifEmpty { "—" },
-        countries = countries.orEmpty().joinToString(", ") { it.name ?: "" }.ifEmpty { "—" }
+        countries = countries.orEmpty().joinToString(", ") { it.name ?: "" }.ifEmpty { "—" },
+        isSeries = null,
+        actors = null,
+        trailers = emptyList()
     )
 
 }
