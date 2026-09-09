@@ -3,6 +3,7 @@ package com.gerasimov_mobile_dev.movieflow.data.remote
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface PoiskKinoApi {
@@ -14,4 +15,10 @@ interface PoiskKinoApi {
         @Query("sort") sort: String = "rating.kp",
         @Query("order") order: String = "desc"
     ): Response<MoviesResponseDto>
+    @GET("v1.5/movie/{id}")
+        suspend fun getMovieDetails(
+        @Path("id") id: Int,
+        @Header("X-API-KEY") apiKey: String
+    ): Response<MovieDetailsDto>
+
 }

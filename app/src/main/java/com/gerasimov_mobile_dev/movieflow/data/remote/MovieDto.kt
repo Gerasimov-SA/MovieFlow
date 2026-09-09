@@ -1,5 +1,8 @@
 package com.gerasimov_mobile_dev.movieflow.data.remote
 
+import com.gerasimov_mobile_dev.movieflow.data.remote.common.CountryDto
+import com.gerasimov_mobile_dev.movieflow.data.remote.common.GenreDto
+import com.gerasimov_mobile_dev.movieflow.data.remote.common.RatingDto
 import com.squareup.moshi.JsonClass
 
 
@@ -33,16 +36,6 @@ data class MoviesResponseDto(
     val total: Int?
 )
 @JsonClass(generateAdapter = true)
-data class RatingDto(
-    val kp: Double?,
-    val imdb: Double?,
-    val tmdb: Double?,
-    val filmCritics: Double?,
-    val russianFilmCritics: Double?,
-    val await: Double?
-)
-
-@JsonClass(generateAdapter = true)
 data class PosterDto(
     val url: String?,
     val previewUrl: String?
@@ -54,28 +47,5 @@ data class BackdropDto(
     val previewUrl: String?
 )
 
-@JsonClass(generateAdapter = true)
-data class GenreDto(
-    val name: String,
-    val id: Int,
-    val slug: String
-)
 
-@JsonClass(generateAdapter = true)
-data class CountryDto(
-    val name: String,
-    val id: Int
-)
 
-@JsonClass(generateAdapter = true)
-data class VideosDto(
-    val trailers: List<TrailerDto>?
-)
-
-@JsonClass(generateAdapter = true)
-data class TrailerDto(
-    val url: String?,
-    val name: String?,
-    val site: String?,
-    val type: String?
-)
