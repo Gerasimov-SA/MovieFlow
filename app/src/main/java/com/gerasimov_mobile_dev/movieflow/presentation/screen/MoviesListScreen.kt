@@ -26,6 +26,8 @@ import coil.compose.AsyncImage
 import com.gerasimov_mobile_dev.movieflow.domain.model.Movie
 import com.gerasimov_mobile_dev.movieflow.presentation.MoviesViewModel
 import com.gerasimov_mobile_dev.movieflow.presentation.component.ErrorScreen
+import com.gerasimov_mobile_dev.movieflow.presentation.component.MoviesListSkeletonUi
+
 @Composable
 fun MoviesListScreen(
     viewModel: MoviesViewModel = hiltViewModel(),
@@ -35,7 +37,7 @@ fun MoviesListScreen(
     when {
         state.isLoading && state.movies.isEmpty() -> {
             // Экран загрузки (первый вход)
-            BoxScreen("Загрузка фильмов...")
+            MoviesListSkeletonUi()
         }
 
         state.error != null -> {
