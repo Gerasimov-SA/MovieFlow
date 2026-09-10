@@ -49,10 +49,10 @@ class MoviesPagingSource @Inject constructor(
                     prevKey = null,
                     nextKey = nextKey
                 )
-            } catch (e: Exception) {
-                LoadResult.Error(e)
             } catch (e: CancellationException) {
                 throw e
+            } catch (e: Exception) {
+                LoadResult.Error(e)
             }
         }
     }

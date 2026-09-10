@@ -2,6 +2,7 @@ package com.gerasimov_mobile_dev.movieflow.data.repository
 
 
 import android.util.Log
+import androidx.paging.PagingSource
 import com.gerasimov_mobile_dev.movieflow.BuildConfig
 import com.gerasimov_mobile_dev.movieflow.data.remote.PoiskKinoApi
 import com.gerasimov_mobile_dev.movieflow.data.remote.toDomain
@@ -14,6 +15,7 @@ import javax.inject.Singleton
 @Singleton
 class MoviesRepositoryImpl @Inject constructor(
     private val api: PoiskKinoApi,
+    private val pagingSource: MoviesPagingSource
 ) : MoviesRepository {
     override suspend fun getMovies(): List<Movie> {
 
@@ -47,6 +49,10 @@ class MoviesRepositoryImpl @Inject constructor(
             }
 
         }
+    }
+
+    override fun getMoviesPagingSource(): PagingSource<Int, Movie> {
+       return pagingSource
     }
 
 }

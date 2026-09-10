@@ -2,6 +2,11 @@ package com.gerasimov_mobile_dev.movieflow.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.PagingSource
+import androidx.paging.cachedIn
 import com.gerasimov_mobile_dev.movieflow.data.repository.MoviesRepository
 import com.gerasimov_mobile_dev.movieflow.data.repository.MoviesRepositoryImpl
 import com.gerasimov_mobile_dev.movieflow.domain.model.Movie
@@ -30,30 +35,16 @@ data class MoviesUiState(
 class MoviesViewModel @Inject constructor(
     private val repository: MoviesRepository
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(MoviesUiState())
-    val uiState: StateFlow<MoviesUiState> = _uiState.asStateFlow()
 
-    init {
-        getMovies()
+    val moviesFlow: Flow<PagingData<Movie>> = Pager(
+        config = PagingConfig(
+            pageSize = 20,              // Сколько грузить за раз (совпадает с limit по умолчанию в API)
+            enablePlaceholders = true,  // КРИТИЧНО: создает null-элементы для твоих скелетонов
+            initialLoadSize = 40        // При первом запуске загрузит 2 страницы сразу (40 фильмов)
+        ),
+        pagingSourceFactory = { repository.getMoviesPagingSource() }
+    ).flow.cachedIn(viewModelScope)
+
     }
 
-    fun getMovies() {
-        _uiState.update {
-            it.copy(isLoading = true, error = null)
-        }
-        viewModelScope.launch {
-            delay(800.milliseconds)
-            try {
-                val movies = repository.getMovies()
-                _uiState.update { it.copy(isLoading = false, error = null, movies = movies) }
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                _uiState.update { it.copy(error = "Не удалось загрузить список фильмов") }
-            }
-        }
-    }
-    fun refresh() {
-        getMovies()
-    }
-}
+

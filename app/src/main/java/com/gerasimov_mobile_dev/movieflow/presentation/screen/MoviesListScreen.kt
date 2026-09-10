@@ -1,3 +1,4 @@
+
 package com.gerasimov_mobile_dev.movieflow.presentation.screen
 
 import android.util.Log
@@ -22,10 +23,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import com.gerasimov_mobile_dev.movieflow.domain.model.Movie
 import com.gerasimov_mobile_dev.movieflow.presentation.MoviesViewModel
 import com.gerasimov_mobile_dev.movieflow.presentation.component.ErrorScreen
+import com.gerasimov_mobile_dev.movieflow.presentation.component.MovieItemSkeletonUi
 import com.gerasimov_mobile_dev.movieflow.presentation.component.MoviesListSkeletonUi
 
 @Composable
@@ -33,54 +38,93 @@ fun MoviesListScreen(
     viewModel: MoviesViewModel = hiltViewModel(),
     onMovieClick: (Int) -> Unit
 ) {
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
-    when {
-        state.isLoading && state.movies.isEmpty() -> {
-            // Экран загрузки (первый вход)
+    val lazyPagingItems = viewModel.moviesFlow.collectAsLazyPagingItems()
+
+    // Обработка состояний первой загрузки (refresh)
+    val refreshState = lazyPagingItems.loadState.refresh
+    when (refreshState) {
+        is LoadState.Loading -> {
+            // Экран загрузки
             MoviesListSkeletonUi()
         }
-
-        state.error != null -> {
-            // Экран ошибки
-            ErrorScreen(state.error!!, {viewModel.refresh()})
+        is LoadState.Error -> {
+            //Экран ошибки
+            ErrorScreen(
+                message = refreshState.error.message ?: "Не удалось загрузить фильмы",
+                onRetry = { lazyPagingItems.retry() }
+            )
         }
-
-        else -> {
-            // Основной экран со списком
-            Column(
-                modifier = Modifier.fillMaxSize(),
-
+        is LoadState.NotLoading -> {
+            if (lazyPagingItems.itemCount == 0) {
+                // Данные загружены, но список пуст
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
                 ) {
-                if (state.movies.isEmpty()) {
                     Text("Фильмов нет")
-                } else {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        items(state.movies) { movie ->
+                }
+            } else {
+                // Основной список
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(
+                        count = lazyPagingItems.itemCount,
+                        key = { index -> lazyPagingItems.peek(index)?.id ?: index }
+                    ) { index ->
+                        val movie = lazyPagingItems[index]
 
-                            MovieItem(movie = movie, onClick = { onMovieClick(movie.id) })
+                        if (movie == null) {
+                            // Placeholder от Paging — рисуем скелетон прямо в ячейке
+                            MovieItemSkeletonUi()
+                        } else {
+                            MovieItem(
+                                movie = movie,
+                                onClick = { onMovieClick(movie.id) }
+                            )
                         }
                     }
-                }
 
-
-                Button(
-                    onClick = { viewModel.refresh() },
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(top = 16.dp)
-                ) {
-                    Text("Обновить")
+                    // Индикатор подгрузки следующей страницы (хвост списка)
+                    when (lazyPagingItems.loadState.append) {
+                        is LoadState.Loading -> {
+                            item {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CircularProgressIndicator()
+                                }
+                            }
+                        }
+                        is LoadState.Error -> {
+                            item {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    TextButton(onClick = { lazyPagingItems.retry() }) {
+                                        Text("Ошибка загрузки. Повторить")
+                                    }
+                                }
+                            }
+                        }
+                        else -> {}
+                    }
                 }
             }
         }
     }
-
-
 }
+
+
+
 
 @Composable
 fun BoxScreen(text: String) {

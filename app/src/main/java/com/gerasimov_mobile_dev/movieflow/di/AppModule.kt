@@ -2,6 +2,7 @@ package com.gerasimov_mobile_dev.movieflow.di
 
 import android.content.Context
 import com.gerasimov_mobile_dev.movieflow.data.remote.PoiskKinoApi
+import com.gerasimov_mobile_dev.movieflow.data.repository.MoviesPagingSource
 import com.gerasimov_mobile_dev.movieflow.data.repository.MoviesRepository
 import com.gerasimov_mobile_dev.movieflow.data.repository.MoviesRepositoryImpl
 import dagger.Module
@@ -22,8 +23,9 @@ object AppModule {
     @Singleton
     fun provideMoviesRepository(
         api: PoiskKinoApi,
-        @ApplicationContext context: Context
+        pagingSource: MoviesPagingSource,
     ): MoviesRepository = MoviesRepositoryImpl(
         api = api,
+        pagingSource = pagingSource
     )
 }
