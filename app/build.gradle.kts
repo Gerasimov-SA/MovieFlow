@@ -96,6 +96,9 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
     //Animation
     implementation(libs.androidx.animation)
+    //Paging
+    implementation(libs.androidx.paging.runtime.ktx)
+    implementation(libs.paging.compose)
 //    // Logging
 //    implementation(libs.timber)
 }
