@@ -15,7 +15,6 @@ import javax.inject.Singleton
 @Singleton
 class MoviesRepositoryImpl @Inject constructor(
     private val api: PoiskKinoApi,
-    private val pagingSource: MoviesPagingSource
 ) : MoviesRepository {
     override suspend fun getMovies(): List<Movie> {
 
@@ -51,8 +50,8 @@ class MoviesRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getMoviesPagingSource(): PagingSource<Int, Movie> {
-       return pagingSource
+    override fun getMoviesPagingSource(): PagingSource<String, Movie> {
+       return MoviesPagingSource(api)
     }
 
 }

@@ -22,10 +22,8 @@ object AppModule {
     @Provides
     @Singleton
     fun provideMoviesRepository(
-        api: PoiskKinoApi,
-        pagingSource: MoviesPagingSource,
+        api: PoiskKinoApi
     ): MoviesRepository = MoviesRepositoryImpl(
-        api = api,
-        pagingSource = pagingSource
+        api = api
     )
 }

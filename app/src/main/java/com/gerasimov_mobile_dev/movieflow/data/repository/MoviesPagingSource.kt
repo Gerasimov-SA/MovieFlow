@@ -11,26 +11,28 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
+
 class MoviesPagingSource @Inject constructor(
     private val api: PoiskKinoApi
-) : PagingSource<Int, Movie>() {
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
+) : PagingSource<String, Movie>() {
+    override suspend fun load(params: LoadParams<String>): LoadResult<String, Movie> {
         return withContext(Dispatchers.IO) {
             try {
 
-                val page = params.key ?: 1
-
+                val cursor = params.key
                 val limit = params.loadSize
                 val response = api.getMovies(
                     apiKey = BuildConfig.PK_API_KEY,
                     limit = limit,
-                    page = page,
+                    next = cursor
                 )
+
+
+
+
                 if (!response.isSuccessful) {
-                    return@withContext LoadResult.Error(Exception("Ошибка API при загрузке страницы $page: ${response.code()}"))
+                    return@withContext LoadResult.Error(Exception("Ошибка API при загрузке страницы: ${response.code()}"))
                 }
                 val body = response.body() ?: return@withContext LoadResult.Error(
                     Exception("Пустой ответ от API на странице \$page")
@@ -39,14 +41,14 @@ class MoviesPagingSource @Inject constructor(
 
 
                 val nextKey = if (body.hasNext == true) {
-                    page + 1
+                    body.next
                 } else {
                     null
                 }
 
                 LoadResult.Page(
                     data = items,
-                    prevKey = null,
+                    prevKey = cursor,
                     nextKey = nextKey
                 )
             } catch (e: CancellationException) {
@@ -57,13 +59,11 @@ class MoviesPagingSource @Inject constructor(
         }
     }
 
-    override fun getRefreshKey(state: PagingState<Int, Movie>): Int? {
+    override fun getRefreshKey(state: PagingState<String, Movie>): String? {
         return state.anchorPosition?.let { anchorPosition ->
-            state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
-                ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
-        } ?: 1
+            state.closestPageToPosition(anchorPosition)?.prevKey
+        }
+
     }
-
 }
-
 

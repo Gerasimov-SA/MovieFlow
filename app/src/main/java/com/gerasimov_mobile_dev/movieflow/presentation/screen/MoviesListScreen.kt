@@ -26,9 +26,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
 import com.gerasimov_mobile_dev.movieflow.domain.model.Movie
 import com.gerasimov_mobile_dev.movieflow.presentation.MoviesViewModel
+import com.gerasimov_mobile_dev.movieflow.presentation.component.AnimatedSkeletonBox
 import com.gerasimov_mobile_dev.movieflow.presentation.component.ErrorScreen
 import com.gerasimov_mobile_dev.movieflow.presentation.component.MovieItemSkeletonUi
 import com.gerasimov_mobile_dev.movieflow.presentation.component.MoviesListSkeletonUi
@@ -72,12 +75,11 @@ fun MoviesListScreen(
                 ) {
                     items(
                         count = lazyPagingItems.itemCount,
-                        key = { index -> lazyPagingItems.peek(index)?.id ?: index }
+                        key = lazyPagingItems.itemKey { it.id }
                     ) { index ->
                         val movie = lazyPagingItems[index]
 
                         if (movie == null) {
-                            // Placeholder от Paging — рисуем скелетон прямо в ячейке
                             MovieItemSkeletonUi()
                         } else {
                             MovieItem(
@@ -163,17 +165,24 @@ fun MovieItem(movie: Movie, onClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            AsyncImage(
+            SubcomposeAsyncImage(
                 model = movie.poster,
                 contentDescription = movie.name,
                 modifier = Modifier
                     .size(100.dp)
                     .clip(RoundedCornerShape(8.dp)),
                 contentScale = ContentScale.Crop,
-                placeholder = painterResource(id = android.R.drawable.ic_menu_gallery),
-                error = painterResource(
-                    id = com.gerasimov_mobile_dev.movieflow.R.drawable.ic_no_poster2
-                )
+                loading = {
+                    AnimatedSkeletonBox(
+                        modifier = Modifier.fillMaxSize(),
+                        cornerRadius = 8.dp
+                    )
+                },
+                error ={AnimatedSkeletonBox(
+                    modifier = Modifier.fillMaxSize(),
+                    cornerRadius = 8.dp
+                )}
+
             )
 
             // Текст: название, рейтинг, описание

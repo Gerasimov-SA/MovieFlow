@@ -8,5 +8,5 @@ interface MoviesRepository {
      suspend fun getMovies(): List<Movie>
      suspend fun getMovieDetails(movieId:Int):Movie
 
-    fun getMoviesPagingSource(): PagingSource<Int, Movie>
+    fun getMoviesPagingSource(): PagingSource<String, Movie>
 }
