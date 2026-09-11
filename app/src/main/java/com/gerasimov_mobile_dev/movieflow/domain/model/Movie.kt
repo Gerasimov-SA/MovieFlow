@@ -10,7 +10,7 @@ data class Movie(
     val movieLength: Int?,
     val isSeries: Boolean?,
     val ageRating: String?,
-    val rating: Double?,
+    val rating: Double,
     val poster: String?,
     val backdrop: String?,
     val genres: String?,

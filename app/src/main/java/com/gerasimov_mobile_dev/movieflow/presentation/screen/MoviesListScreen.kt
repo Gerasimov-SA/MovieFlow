@@ -1,7 +1,7 @@
-
 package com.gerasimov_mobile_dev.movieflow.presentation.screen
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
@@ -50,6 +50,7 @@ fun MoviesListScreen(
             // Экран загрузки
             MoviesListSkeletonUi()
         }
+
         is LoadState.Error -> {
             //Экран ошибки
             ErrorScreen(
@@ -57,6 +58,7 @@ fun MoviesListScreen(
                 onRetry = { lazyPagingItems.retry() }
             )
         }
+
         is LoadState.NotLoading -> {
             if (lazyPagingItems.itemCount == 0) {
                 // Данные загружены, но список пуст
@@ -103,6 +105,7 @@ fun MoviesListScreen(
                                 }
                             }
                         }
+
                         is LoadState.Error -> {
                             item {
                                 Row(
@@ -117,6 +120,7 @@ fun MoviesListScreen(
                                 }
                             }
                         }
+
                         else -> {}
                     }
                 }
@@ -124,8 +128,6 @@ fun MoviesListScreen(
         }
     }
 }
-
-
 
 
 @Composable
@@ -143,7 +145,6 @@ fun BoxScreen(text: String) {
 
     }
 }
-
 
 
 @Composable
@@ -164,27 +165,50 @@ fun MovieItem(movie: Movie, onClick: () -> Unit) {
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-
-            SubcomposeAsyncImage(
-                model = movie.poster,
-                contentDescription = movie.name,
+            Box(
                 modifier = Modifier
-                    .size(100.dp)
-                    .clip(RoundedCornerShape(8.dp)),
-                contentScale = ContentScale.Crop,
-                loading = {
-                    AnimatedSkeletonBox(
-                        modifier = Modifier.fillMaxSize(),
-                        cornerRadius = 8.dp
-                    )
-                },
-                error ={AnimatedSkeletonBox(
-                    modifier = Modifier.fillMaxSize(),
-                    cornerRadius = 8.dp
-                )}
+                    .size(150.dp)
+                    .clip(RoundedCornerShape(8.dp))
+            ) {
+                SubcomposeAsyncImage(
+                    model = movie.poster,
+                    contentDescription = movie.name,
+                    modifier = Modifier
+                        .size(150.dp)
+                        .clip(RoundedCornerShape(8.dp)),
+                    contentScale = ContentScale.Crop,
+                    loading = {
+                        AnimatedSkeletonBox(
+                            modifier = Modifier.fillMaxSize(),
+                            cornerRadius = 8.dp
+                        )
+                    },
+                    error = {
+                        AnimatedSkeletonBox(
+                            modifier = Modifier.fillMaxSize(),
+                            cornerRadius = 8.dp
+                        )
+                    }
 
-            )
-
+                )
+                val (color, textColor) = getRatingColors(movie.rating)
+                if (movie.rating > 0.0) {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .offset(x = (-8).dp, y = 8.dp)
+                            .background(color, RoundedCornerShape(4.dp))
+                            .padding(horizontal = 6.dp, vertical = 2.dp)
+                    ) {
+                        Text(
+                            text = "%.1f".format(movie.rating),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = textColor,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+            }
             // Текст: название, рейтинг, описание
             Column(
                 modifier = Modifier.weight(1f),
@@ -198,46 +222,31 @@ fun MovieItem(movie: Movie, onClick: () -> Unit) {
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Star,
-                        contentDescription = null,
-                        tint = Color.Yellow
-                    )
-                    Text(
-                        text = "Рейтинг: ${movie.rating}",
-                        style = MaterialTheme.typography.titleSmall,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-                if (!movie.shortDescription.isNullOrBlank()) {
-                    Text(
-                        text = movie.shortDescription,
-                        style = MaterialTheme.typography.bodyMedium,
-                        maxLines = 3,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
                 Text(
                     text = "Дата выхода: ${movie.year}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(text = "Жанр: ${movie.genres}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
     }
 }
 
 
-
+@Composable
+private fun getRatingColors(rating: Double): Pair<Color, Color> {
+    return when {
+        rating >= 8.0 -> Color(0xFF2E7D32) to Color.White          // зелёный
+        rating >= 7.0 -> Color(0xFFFF8A22) to Color.White       // оранжевый
+        rating >= 5.0 -> Color(0xFF6C6C6C) to Color.White        // жёлто‑оранжевый
+        else -> Color(0xFFF44336) to Color.White                  // красный
+    }
+}
 
 
 

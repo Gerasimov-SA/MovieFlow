@@ -23,7 +23,7 @@ fun MovieDetailsDto.toDomain(): Movie {
         movieLength = movieLength,
         isSeries = isSeries,
         ageRating = ageRating?.toString(),
-        rating = rating?.kp,
+        rating = rating?.imdb ?: rating?.kp ?: 0.0,
         poster = poster?.url,
         backdrop = backdrop?.url,
         genres = genres.joinNames { it.name },
