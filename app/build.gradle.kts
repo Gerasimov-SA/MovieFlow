@@ -1,4 +1,5 @@
 import com.android.tools.r8.internal.pk3
+import org.gradle.kotlin.dsl.testImplementation
 import java.util.Properties
 
 plugins {
@@ -115,6 +116,8 @@ dependencies {
     testImplementation(libs.truth)
 
     testImplementation(libs.mockk)
+    testImplementation (libs.kotlinx.coroutines.test)
 //    // Logging
 //    implementation(libs.timber)
+    testImplementation(kotlin("test"))
 }

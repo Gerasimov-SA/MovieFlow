@@ -50,7 +50,6 @@ class MovieDetailsViewModel @Inject constructor(
             it.copy(isLoading = true, error = null)
         }
         viewModelScope.launch {
-            delay(300.milliseconds)
             try {
                 val data = repository.getMovieDetails(movieId)
                 _uiState.update { it.copy(movie = data, isLoading = false) }
