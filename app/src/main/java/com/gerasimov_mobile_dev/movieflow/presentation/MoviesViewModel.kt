@@ -26,11 +26,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
 
-data class MoviesUiState(
-    val isLoading: Boolean = false,
-    val error: String? = null,
-    val movies: List<Movie> = emptyList()
-)
+
 
 @HiltViewModel
 class MoviesViewModel @Inject constructor(

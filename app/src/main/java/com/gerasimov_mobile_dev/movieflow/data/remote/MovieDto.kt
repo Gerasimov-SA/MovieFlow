@@ -33,7 +33,7 @@ data class MoviesResponseDto(
     val prev: String?,
     val hasNext: Boolean?,
     val hasPrev: Boolean?,
-    val total: Int?
+//    val total: Int?
 )
 @JsonClass(generateAdapter = true)
 data class PosterDto(

@@ -102,6 +102,8 @@ private fun MovieDetailsContent(
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
             )
+
+
             // Затемнение для читаемости кнопки
             Box(
                 modifier = Modifier
@@ -162,7 +164,7 @@ private fun MovieDetailsContent(
                         Text("Сериал", fontSize = 14.sp, color = Color.Gray)
                     }
                     // Рейтинг
-                    if (movie.rating != null && movie.rating > 0) {
+                    if ( movie.rating > 0) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
                                 text = "★ ${String.format("%.1f", movie.rating)}",
@@ -183,7 +185,7 @@ private fun MovieDetailsContent(
                     // Возрастной рейтинг
                     if (!movie.ageRating.isNullOrBlank()) {
                         Text(
-                            text = movie.ageRating,
+                            text = "${movie.ageRating}+",
                             fontSize = 14.sp,
                             color = Color.Gray
                         )

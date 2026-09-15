@@ -49,6 +49,11 @@ android {
         buildConfig = true
         compose = true
     }
+    testOptions {
+        unitTests {
+            isReturnDefaultValues = true
+        }
+    }
 
 }
 
@@ -99,6 +104,17 @@ dependencies {
     //Paging
     implementation(libs.androidx.paging.runtime.ktx)
     implementation(libs.paging.compose)
+
+
+    // JUnit + корутины для тестов
+    testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
+
+    testImplementation(libs.turbine)
+
+    testImplementation(libs.truth)
+
+    testImplementation(libs.mockk)
 //    // Logging
 //    implementation(libs.timber)
 }
