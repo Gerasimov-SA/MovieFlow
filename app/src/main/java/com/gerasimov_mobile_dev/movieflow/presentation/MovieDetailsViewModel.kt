@@ -40,7 +40,7 @@ class MovieDetailsViewModel @Inject constructor(
             getDetails(movieId)
         } else {
             _uiState.update {
-                it.copy(error = "Некорректный ID фильма")
+                it.copy(error = "Некорректный ID фильма", isLoading = false)
             }
         }
     }
@@ -56,7 +56,7 @@ class MovieDetailsViewModel @Inject constructor(
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                _uiState.update { it.copy(error = e.message ?: "Не удалось загрузить фильм") }
+                _uiState.update { it.copy(error = e.message ?: "Не удалось загрузить фильм", isLoading = false) }
             }
         }
 
