@@ -35,9 +35,9 @@ class MoviesViewModel @Inject constructor(
 
     val moviesFlow: Flow<PagingData<Movie>> = Pager(
         config = PagingConfig(
-            pageSize = 20,              // Сколько грузить за раз (совпадает с limit по умолчанию в API)
-            enablePlaceholders = true,  // КРИТИЧНО: создает null-элементы для твоих скелетонов
-            initialLoadSize = 40        // При первом запуске загрузит 2 страницы сразу (40 фильмов)
+            pageSize = 20,
+            enablePlaceholders = true,
+            initialLoadSize = 40
         ),
         pagingSourceFactory = { repository.getMoviesPagingSource() }
     ).flow.cachedIn(viewModelScope)

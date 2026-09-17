@@ -20,7 +20,7 @@ fun MovieDetailsSkeletonHeader() {
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        // Фон-заглушка (backdrop)
+
         SkeletonBox(
             modifier = Modifier
                 .fillMaxWidth()
@@ -30,7 +30,7 @@ fun MovieDetailsSkeletonHeader() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Постер + правая колонка (заглушка)
+
         Row(
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.Top,
@@ -63,7 +63,7 @@ fun MovieDetailsSkeletonHeader() {
                     cornerRadius = 4.dp
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                // Рейтинг, длительность, возрастной рейтинг — ряд мелких блоков
+
                 SkeletonRow(height = 20.dp, count = 3, gap = 6.dp, lastCornerRadius = 12.dp)
             }
         }
@@ -77,13 +77,13 @@ fun MovieDetailsSkeletonContent() {
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        // Жанры / страны (2 строки)
+
         repeat(2) {
             SkeletonRow(height = 24.dp, count = 1, gap = 0.dp)
             Spacer(modifier = Modifier.height(12.dp))
         }
 
-        // Заголовок «Описание»
+
         SkeletonRow(height = 28.dp, count = 1)
         Spacer(modifier = Modifier.height(8.dp))
 

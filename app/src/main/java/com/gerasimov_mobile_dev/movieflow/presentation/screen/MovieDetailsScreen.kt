@@ -50,7 +50,7 @@ fun MovieDetailsScreen(
 
     when {
         state.isLoading && state.movie == null -> {
-            // Показываем скелетон
+
             Column(
                 modifier = modifier.fillMaxSize()
             ) {
@@ -90,7 +90,7 @@ private fun MovieDetailsContent(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        // --- Шапка с фоном и кнопкой "назад" ---
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -104,7 +104,7 @@ private fun MovieDetailsContent(
             )
 
 
-            // Затемнение для читаемости кнопки
+
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -124,13 +124,13 @@ private fun MovieDetailsContent(
             }
         }
 
-        // --- Основной контент ---
+
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            // Постер + базовая информация
+
             Row(
                 verticalAlignment = Alignment.Top,
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -174,7 +174,7 @@ private fun MovieDetailsContent(
                             )
                         }
                     }
-                    // Длительность
+
                     if (movie.movieLength != null) {
                         Text(
                             text = "${movie.movieLength} мин",
@@ -182,7 +182,7 @@ private fun MovieDetailsContent(
                             color = Color.Gray
                         )
                     }
-                    // Возрастной рейтинг
+
                     if (!movie.ageRating.isNullOrBlank()) {
                         Text(
                             text = "${movie.ageRating}+",
@@ -195,17 +195,17 @@ private fun MovieDetailsContent(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // Жанры
+
             if (!movie.genres.isNullOrBlank()) {
                 InfoLine(title = "Жанры", value = movie.genres)
             }
 
-            // Страны
+
             if (!movie.countries.isNullOrBlank()) {
                 InfoLine(title = "Страны", value = movie.countries)
             }
 
-            // Описание
+
             val desc = movie.description ?: movie.shortDescription
             if (!desc.isNullOrBlank()) {
                 Spacer(modifier = Modifier.height(16.dp))
@@ -218,7 +218,7 @@ private fun MovieDetailsContent(
                 Text(text = desc, fontSize = 15.sp, lineHeight = 22.sp)
             }
 
-            // Актёры
+
             if (!movie.actors.isNullOrBlank() && movie.actors != "—") {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
@@ -230,7 +230,7 @@ private fun MovieDetailsContent(
                 Text(text = movie.actors, fontSize = 15.sp, color = Color.Gray)
             }
 
-            // Трейлеры
+
             if (movie.trailers.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(

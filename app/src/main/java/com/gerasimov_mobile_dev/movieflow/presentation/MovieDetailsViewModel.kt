@@ -31,9 +31,9 @@ class MovieDetailsViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiState =
-        MutableStateFlow(DetailsUiState())//создаем изменяемый горячий поток в котором лежит состояние, делаем private чтобы менять можно было только внутри MovieDetailsViewModel, теперь никто из других слоев не сможет его менять
+        MutableStateFlow(DetailsUiState())
     val uiState: StateFlow<DetailsUiState> =
-        _uiState.asStateFlow() //Здесь из потока ui_state делаем неизменяемый горячий поток. Сюда будем записывать уже измененное состояние и отдавать дрпугим слоям для чтения
+        _uiState.asStateFlow()
     val movieId: Int = savedStateHandle.get("movieId") ?: 0
     init {
         if (movieId > 0) {

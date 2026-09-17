@@ -6,7 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.gerasimov_mobile_dev.movieflow.presentation.MovieDetailsViewModel
+
 import com.gerasimov_mobile_dev.movieflow.presentation.screen.MovieDetailsScreen
 import com.gerasimov_mobile_dev.movieflow.presentation.screen.MoviesListScreen
 

@@ -43,16 +43,16 @@ fun MoviesListScreen(
 ) {
     val lazyPagingItems = viewModel.moviesFlow.collectAsLazyPagingItems()
 
-    // Обработка состояний первой загрузки (refresh)
+
     val refreshState = lazyPagingItems.loadState.refresh
     when (refreshState) {
         is LoadState.Loading -> {
-            // Экран загрузки
+
             MoviesListSkeletonUi()
         }
 
         is LoadState.Error -> {
-            //Экран ошибки
+
             ErrorScreen(
                 message = refreshState.error.message ?: "Не удалось загрузить фильмы",
                 onRetry = { lazyPagingItems.retry() }
@@ -61,7 +61,7 @@ fun MoviesListScreen(
 
         is LoadState.NotLoading -> {
             if (lazyPagingItems.itemCount == 0) {
-                // Данные загружены, но список пуст
+
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -69,7 +69,7 @@ fun MoviesListScreen(
                     Text("Фильмов нет")
                 }
             } else {
-                // Основной список
+
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(8.dp),
@@ -91,7 +91,7 @@ fun MoviesListScreen(
                         }
                     }
 
-                    // Индикатор подгрузки следующей страницы (хвост списка)
+
                     when (lazyPagingItems.loadState.append) {
                         is LoadState.Loading -> {
                             item {
@@ -128,24 +128,6 @@ fun MoviesListScreen(
         }
     }
 }
-
-
-@Composable
-fun BoxScreen(text: String) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        CircularProgressIndicator()
-        Text(
-            text = text,
-            modifier = Modifier.padding(top = 16.dp)
-        )
-
-    }
-}
-
 
 @Composable
 fun MovieItem(movie: Movie, onClick: () -> Unit) {
@@ -209,7 +191,7 @@ fun MovieItem(movie: Movie, onClick: () -> Unit) {
                     }
                 }
             }
-            // Текст: название, рейтинг, описание
+
             Column(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.SpaceBetween
@@ -241,10 +223,10 @@ fun MovieItem(movie: Movie, onClick: () -> Unit) {
 @Composable
 private fun getRatingColors(rating: Double): Pair<Color, Color> {
     return when {
-        rating >= 8.0 -> Color(0xFF2E7D32) to Color.White          // зелёный
-        rating >= 7.0 -> Color(0xFFFF8A22) to Color.White       // оранжевый
-        rating >= 5.0 -> Color(0xFF6C6C6C) to Color.White        // жёлто‑оранжевый
-        else -> Color(0xFFF44336) to Color.White                  // красный
+        rating >= 8.0 -> Color(0xFF2E7D32) to Color.White
+        rating >= 7.0 -> Color(0xFFFF8A22) to Color.White
+        rating >= 5.0 -> Color(0xFF6C6C6C) to Color.White
+        else -> Color(0xFFF44336) to Color.White
     }
 }
 

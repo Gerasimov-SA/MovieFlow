@@ -32,30 +32,7 @@ object NetworkModule {
             level = HttpLoggingInterceptor.Level.BODY
         }
         return OkHttpClient.Builder()
-//            .addInterceptor(loggingInterceptor)
-            .addInterceptor { chain ->
-                val request = chain.request()
-                // request.method теперь свойство, не метод
-                Log.d("CustomOkHttp", "--> ${request.method} ${request.url}")
-
-                val response = chain.proceed(request)
-
-                // response.body теперь свойство; читаем тело один раз
-                val rawBody = response.body?.string() ?: "no body"
-
-                Log.d("CustomOkHttp", "<-- ${response.code} ${response.request.url}")
-                Log.d("CustomOkHttp", "BODY: $rawBody")
-
-                // Обязательно возвращаем новый Response с тем же телом, иначе поток закроется
-                response.newBuilder()
-                    .body(
-                        okhttp3.ResponseBody.create(
-                            response.body?.contentType(),
-                            rawBody
-                        )
-                    )
-                    .build()
-            }
+            .addInterceptor(loggingInterceptor)
             .connectTimeout(15, TimeUnit.SECONDS)
             .readTimeout(15, TimeUnit.SECONDS)
             .build()
