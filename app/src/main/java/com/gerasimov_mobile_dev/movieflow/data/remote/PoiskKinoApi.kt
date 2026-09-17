@@ -26,6 +26,19 @@ interface PoiskKinoApi {
         @Header("X-API-KEY") apiKey: String
     ): Response<MovieDetailsDto>
 
-
+    @GET("v1.5/search/movies")
+    suspend fun searchMovies(
+        @Header("X-API-KEY") apiKey: String,
+        @Query("query") query: String? = null,
+        @Query("type") type: List<String>? = null,
+        @Query("year") year: List<String>? = null,
+        @Query("genres.name") genresName: List<String>? = null,
+        @Query("rating.kp") ratingKp: List<String>? = null,
+        @Query("notNullFields") notNullFields: List<String>? = null,
+        @Query("limit") limit: Int = 20,
+        @Query("next") next: String? = null,
+        @Query("sortField") sortField: List<String>? = null,
+        @Query("sortType") sortType: List<String>? = null
+    ): Response<MoviesResponseDto>
 
 }
