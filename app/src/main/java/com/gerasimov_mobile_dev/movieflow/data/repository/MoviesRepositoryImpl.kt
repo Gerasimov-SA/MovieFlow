@@ -5,8 +5,10 @@ import android.util.Log
 import androidx.paging.PagingSource
 import com.gerasimov_mobile_dev.movieflow.BuildConfig
 import com.gerasimov_mobile_dev.movieflow.data.remote.PoiskKinoApi
+import com.gerasimov_mobile_dev.movieflow.data.remote.SearchRequestDto
 import com.gerasimov_mobile_dev.movieflow.data.remote.toDomain
 import com.gerasimov_mobile_dev.movieflow.domain.model.Movie
+import com.gerasimov_mobile_dev.movieflow.presentation.state.SearchFilters
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -35,6 +37,10 @@ class MoviesRepositoryImpl @Inject constructor(
 
     override fun getMoviesPagingSource(): PagingSource<String, Movie> {
        return MoviesPagingSource(api)
+    }
+    override fun searchMoviesPagingSource(filters: SearchFilters): PagingSource<String, Movie> {
+        val request = SearchRequestDto.fromFilters(filters)
+        return SearchMoviesPagingSource(api, request)
     }
 
 }

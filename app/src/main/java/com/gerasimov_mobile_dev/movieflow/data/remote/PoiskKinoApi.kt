@@ -26,4 +26,6 @@ interface PoiskKinoApi {
         @Header("X-API-KEY") apiKey: String
     ): Response<MovieDetailsDto>
 
+
+
 }
