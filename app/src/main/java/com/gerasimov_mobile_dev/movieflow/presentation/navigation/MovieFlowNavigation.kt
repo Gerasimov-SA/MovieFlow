@@ -9,6 +9,7 @@ import androidx.navigation.navArgument
 
 import com.gerasimov_mobile_dev.movieflow.presentation.screen.MovieDetailsScreen
 import com.gerasimov_mobile_dev.movieflow.presentation.screen.MoviesListScreen
+import com.gerasimov_mobile_dev.movieflow.presentation.screen.SearchScreen
 
 
 @Composable
@@ -21,6 +22,13 @@ fun MovieFlowNavigation() {
     ) {
         composable("movies") {
             MoviesListScreen(
+                onMovieClick = { movieId ->
+                    navController.navigate("movie/$movieId")
+                }
+            )
+        }
+        composable("search"){
+           SearchScreen(
                 onMovieClick = { movieId ->
                     navController.navigate("movie/$movieId")
                 }

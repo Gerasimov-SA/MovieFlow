@@ -34,6 +34,7 @@ import com.gerasimov_mobile_dev.movieflow.presentation.MoviesViewModel
 import com.gerasimov_mobile_dev.movieflow.presentation.component.AnimatedSkeletonBox
 import com.gerasimov_mobile_dev.movieflow.presentation.component.ErrorScreen
 import com.gerasimov_mobile_dev.movieflow.presentation.component.MovieItemSkeletonUi
+import com.gerasimov_mobile_dev.movieflow.presentation.component.MovieListContent
 import com.gerasimov_mobile_dev.movieflow.presentation.component.MoviesListSkeletonUi
 
 @Composable
@@ -42,91 +43,8 @@ fun MoviesListScreen(
     onMovieClick: (Int) -> Unit
 ) {
     val lazyPagingItems = viewModel.moviesFlow.collectAsLazyPagingItems()
+    MovieListContent(lazyPagingItems, onMovieClick)
 
-
-    val refreshState = lazyPagingItems.loadState.refresh
-    when (refreshState) {
-        is LoadState.Loading -> {
-
-            MoviesListSkeletonUi()
-        }
-
-        is LoadState.Error -> {
-
-            ErrorScreen(
-                message = refreshState.error.message ?: "Не удалось загрузить фильмы",
-                onRetry = { lazyPagingItems.retry() }
-            )
-        }
-
-        is LoadState.NotLoading -> {
-            if (lazyPagingItems.itemCount == 0) {
-
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("Фильмов нет")
-                }
-            } else {
-
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(
-                        count = lazyPagingItems.itemCount,
-                        key = lazyPagingItems.itemKey { it.id }
-                    ) { index ->
-                        val movie = lazyPagingItems[index]
-
-                        if (movie == null) {
-                            MovieItemSkeletonUi()
-                        } else {
-                            MovieItem(
-                                movie = movie,
-                                onClick = { onMovieClick(movie.id) }
-                            )
-                        }
-                    }
-
-
-                    when (lazyPagingItems.loadState.append) {
-                        is LoadState.Loading -> {
-                            item {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(16.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    CircularProgressIndicator()
-                                }
-                            }
-                        }
-
-                        is LoadState.Error -> {
-                            item {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(16.dp),
-                                    horizontalArrangement = Arrangement.Center
-                                ) {
-                                    TextButton(onClick = { lazyPagingItems.retry() }) {
-                                        Text("Ошибка загрузки. Повторить")
-                                    }
-                                }
-                            }
-                        }
-
-                        else -> {}
-                    }
-                }
-            }
-        }
-    }
 }
 
 @Composable
