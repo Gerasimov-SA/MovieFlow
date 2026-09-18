@@ -73,7 +73,7 @@ enum class Destination(
     val icon: ImageVector,
     val contentDescription: String
 ) {
-    MOVIES("movies", "Фильмы", Icons.Default.Movie, "Фильмы"),
+    MOVIES("movies", "Главная", Icons.Default.Movie, "Фильмы"),
     SEARCH("search", "Поиск", Icons.Default.Search, "Поиск"),
     FAVORITES("favorites", "Избранное", Icons.Default.Favorite, "Избранное")
 }

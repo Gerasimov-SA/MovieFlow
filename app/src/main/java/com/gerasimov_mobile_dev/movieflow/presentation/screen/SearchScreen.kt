@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.input.rememberTextFieldState
-
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
@@ -116,11 +115,10 @@ fun SearchScreen(
             .padding(8.dp)
             .semantics { isTraversalGroup = true }
     ) {
-        // --- Список фильмов ---
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 72.dp)
+                .padding(top = 48.dp)
                 .semantics { traversalIndex = 1f }
         ) {
             if (filters.hasActiveFilters()) {
