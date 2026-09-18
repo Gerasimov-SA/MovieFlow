@@ -12,11 +12,25 @@ data class SearchRequestDto(
 ) {
     companion object {
         fun fromFilters(filters: SearchFilters): SearchRequestDto {
+            val yearString = buildString {
+                if (filters.yearFrom != null) append(filters.yearFrom)
+                if (filters.yearFrom != null && filters.yearTo != null) append("-")
+                if (filters.yearTo != null && filters.yearTo != filters.yearFrom) append(filters.yearTo)
+            }
+
+            val ratingString = buildString {
+                if (filters.minRating != null) append(filters.minRating)
+                if (filters.minRating != null && filters.maxRating != null) append("-")
+                if (filters.maxRating != null && filters.maxRating != filters.minRating) append(
+                    filters.maxRating
+                )
+            }
+
             return SearchRequestDto(
                 type = filters.type?.let { listOf(it) },
-                year = filters.year?.let { listOf(it.toString()) },
+                year = yearString.takeIf { it.isNotBlank() }?.let { listOf(it) },
                 genresName = filters.genre?.let { listOf(it) },
-                ratingKp = filters.minRating?.let { listOf("${it}-10") },
+                ratingKp = ratingString.takeIf { it.isNotBlank() }?.let { listOf(it) },
             )
         }
     }

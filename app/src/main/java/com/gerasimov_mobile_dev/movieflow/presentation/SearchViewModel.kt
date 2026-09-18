@@ -36,8 +36,10 @@ class SearchViewModel @Inject constructor(
         _filters.value = SearchFilters(
             type = savedStateHandle.get("type"),
             genre = savedStateHandle.get("genre"),
-            year = savedStateHandle.get("year"),
-            minRating = savedStateHandle.get("minRating")
+            yearFrom = savedStateHandle.get("yearFrom"),
+            yearTo = savedStateHandle.get("yearTo"),
+            minRating = savedStateHandle.get("minRating"),
+            maxRating = savedStateHandle.get("maxRating")
         )
     }
 
@@ -58,13 +60,17 @@ class SearchViewModel @Inject constructor(
     fun clearAll() {
         _filters.update { it.copy(
             type = null,
-            year = null,
             genre = null,
+            yearFrom = null,
+            yearTo = null,
             minRating = null,
+            maxRating = null
         ) }
         savedStateHandle["type"] = null
-        savedStateHandle["year"] = null
         savedStateHandle["genre"] = null
+        savedStateHandle["yearFrom"] = null
+        savedStateHandle["yearTo"] = null
+        savedStateHandle["maxRating"] = null
         savedStateHandle["minRating"] = null
     }
 
@@ -73,9 +79,12 @@ class SearchViewModel @Inject constructor(
         savedStateHandle["type"] = type
     }
 
-    fun updateYear(year: Int?) {
-        _filters.update { it.copy(year = year) }
-        savedStateHandle["year"] = year
+    fun updateYearRange(from: Int?, to: Int?) {
+        _filters.update {it.copy(yearFrom = from, yearTo = to) }
+    }
+
+    fun updateRatingRange(min: Double?, max: Double?) {
+        _filters.update { it.copy(minRating = min, maxRating = max) }
     }
 
     fun updateGenre(genre: String?) {
@@ -83,8 +92,4 @@ class SearchViewModel @Inject constructor(
         savedStateHandle["genre"] = genre
     }
 
-    fun updateMinRating(rating: Double?) {
-        _filters.update { it.copy(minRating = rating) }
-        savedStateHandle["minRating"] = rating
-    }
 }

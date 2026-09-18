@@ -175,9 +175,9 @@ fun SearchScreen(
             onDismiss = { showFiltersDialog = false },
             onApply = { newFilters ->
                 viewModel.updateType(newFilters.type)
-                viewModel.updateYear(newFilters.year)
                 viewModel.updateGenre(newFilters.genre)
-                viewModel.updateMinRating(newFilters.minRating)
+                viewModel.updateYearRange(newFilters.yearFrom, newFilters.yearTo)
+                viewModel.updateRatingRange(newFilters.minRating, newFilters.maxRating)
                 showFiltersDialog = false
             }
         )
