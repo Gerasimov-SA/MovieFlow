@@ -113,6 +113,7 @@ fun SearchScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .padding(8.dp)
             .semantics { isTraversalGroup = true }
     ) {
         // --- Список фильмов ---
@@ -127,12 +128,13 @@ fun SearchScreen(
                     filters = filters,
                     onClear = { viewModel.clearAll() }
                 )
+                MovieListContent(
+                    lazyPagingItems = lazyPagingItems,
+                    onMovieClick = onMovieClick
+                )
             }
 
-            MovieListContent(
-                lazyPagingItems = lazyPagingItems,
-                onMovieClick = onMovieClick
-            )
+
         }
 
         // --- Свёрнутая поисковая строка ---

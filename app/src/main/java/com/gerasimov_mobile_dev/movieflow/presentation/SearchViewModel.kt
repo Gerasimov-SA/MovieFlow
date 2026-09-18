@@ -22,21 +22,26 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.update
 
 
-
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val repository: MoviesRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _filters = MutableStateFlow(
-        savedStateHandle.get("search_filters") ?: SearchFilters()
-    )
+    private val _filters = MutableStateFlow(SearchFilters())
     val filters: StateFlow<SearchFilters> = _filters.asStateFlow()
 
+    init {
+        // Восстанавливаем по полям
+        _filters.value = SearchFilters(
+            type = savedStateHandle.get("type"),
+            genre = savedStateHandle.get("genre"),
+            year = savedStateHandle.get("year"),
+            minRating = savedStateHandle.get("minRating")
+        )
+    }
+
     val searchFlow: Flow<PagingData<Movie>> = _filters
-        .debounce(500)
-        .distinctUntilChanged()
         .flatMapLatest { currentFilters ->
             Pager(
                 config = PagingConfig(
@@ -50,22 +55,36 @@ class SearchViewModel @Inject constructor(
         .cachedIn(viewModelScope)
 
 
-
-
-    fun applyFilters(filters: SearchFilters) {
-        _filters.value = filters
-        saveState()
-    }
-
     fun clearAll() {
-        _filters.value = SearchFilters()
-        saveState()
+        _filters.update { it.copy(
+            type = null,
+            year = null,
+            genre = null,
+            minRating = null,
+        ) }
+        savedStateHandle["type"] = null
+        savedStateHandle["year"] = null
+        savedStateHandle["genre"] = null
+        savedStateHandle["minRating"] = null
     }
-    private fun saveState() {
 
+    fun updateType(type: String?) {
+        _filters.update { it.copy(type = type) }
+        savedStateHandle["type"] = type
     }
-    fun updateType(type: String?) {}
-    fun updateYear(year: Int?) {}
-    fun updateGenre(genre: String?) {}
-    fun updateMinRating(minRating: Double?) {}
+
+    fun updateYear(year: Int?) {
+        _filters.update { it.copy(year = year) }
+        savedStateHandle["year"] = year
+    }
+
+    fun updateGenre(genre: String?) {
+        _filters.update { it.copy(genre = genre) }
+        savedStateHandle["genre"] = genre
+    }
+
+    fun updateMinRating(rating: Double?) {
+        _filters.update { it.copy(minRating = rating) }
+        savedStateHandle["minRating"] = rating
+    }
 }
