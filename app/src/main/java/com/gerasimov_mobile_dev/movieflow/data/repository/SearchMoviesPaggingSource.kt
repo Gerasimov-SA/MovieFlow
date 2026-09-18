@@ -5,6 +5,7 @@ import androidx.paging.PagingState
 import com.gerasimov_mobile_dev.movieflow.BuildConfig
 import com.gerasimov_mobile_dev.movieflow.data.remote.PoiskKinoApi
 import com.gerasimov_mobile_dev.movieflow.data.remote.SearchRequestDto
+import com.gerasimov_mobile_dev.movieflow.data.remote.toDomain
 import com.gerasimov_mobile_dev.movieflow.domain.model.Movie
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
@@ -21,9 +22,8 @@ class SearchMoviesPagingSource @Inject constructor(
             try {
 
                 val cursor = params.key
-                val response = api.searchMovies(
+                val response = api.getMovies(
                     apiKey = BuildConfig.PK_API_KEY,
-                    query = request.query,
                     type = request.type,
                     year = request.year,
                     genresName = request.genresName,
@@ -61,5 +61,9 @@ class SearchMoviesPagingSource @Inject constructor(
         }
     }
 
-    override fun getRefreshKey(state: PagingState<String, Movie>): String? = null
+    override fun getRefreshKey(state: PagingState<String, Movie>): String? {
+        return state.anchorPosition?.let { anchorPosition ->
+            state.closestPageToPosition(anchorPosition)?.prevKey
+        }
+    }
 }

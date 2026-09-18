@@ -50,10 +50,6 @@ class SearchViewModel @Inject constructor(
         .cachedIn(viewModelScope)
 
 
-    fun updateQuery(query: String) {
-        _filters.update { it.copy(query = query) }
-        saveState()
-    }
 
 
     fun applyFilters(filters: SearchFilters) {
@@ -61,17 +57,15 @@ class SearchViewModel @Inject constructor(
         saveState()
     }
 
-    fun clearFilters() {
-        _filters.value = SearchFilters(query = _filters.value.query)
-        saveState()
-    }
-
     fun clearAll() {
         _filters.value = SearchFilters()
         saveState()
     }
-
     private fun saveState() {
 
     }
+    fun updateType(type: String?) {}
+    fun updateYear(year: Int?) {}
+    fun updateGenre(genre: String?) {}
+    fun updateMinRating(minRating: Double?) {}
 }
