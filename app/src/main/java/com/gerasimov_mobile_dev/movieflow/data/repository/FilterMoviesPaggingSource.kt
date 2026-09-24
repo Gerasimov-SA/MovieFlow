@@ -4,7 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.gerasimov_mobile_dev.movieflow.BuildConfig
 import com.gerasimov_mobile_dev.movieflow.data.remote.PoiskKinoApi
-import com.gerasimov_mobile_dev.movieflow.data.remote.SearchRequestDto
+import com.gerasimov_mobile_dev.movieflow.data.remote.FiltersRequestDto
 import com.gerasimov_mobile_dev.movieflow.data.remote.toDomain
 import com.gerasimov_mobile_dev.movieflow.domain.model.Movie
 import jakarta.inject.Inject
@@ -12,9 +12,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.cancellation.CancellationException
 
-class SearchMoviesPagingSource @Inject constructor(
+class FiltersMoviesPagingSource @Inject constructor(
     private val api: PoiskKinoApi,
-    private val request: SearchRequestDto
+    private val request: FiltersRequestDto
 ) : PagingSource<String, Movie>() {
 
     override suspend fun load(params: LoadParams<String>): LoadResult<String, Movie> {

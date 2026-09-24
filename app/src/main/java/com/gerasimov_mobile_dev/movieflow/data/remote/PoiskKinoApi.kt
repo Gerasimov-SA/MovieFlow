@@ -30,4 +30,12 @@ interface PoiskKinoApi {
         @Header("X-API-KEY") apiKey: String
     ): Response<MovieDetailsDto>
 
+    @GET("v1.5/movie/search")
+    suspend fun searchMovies(
+        @Header("X-API-KEY") apiKey: String,
+        @Query("query") query: String,
+        @Query("page") page: Int,
+        @Query("limit") limit: Int
+    ): Response<SearchByNameResponseDto>
+
 }
