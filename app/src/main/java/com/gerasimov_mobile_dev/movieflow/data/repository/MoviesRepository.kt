@@ -10,6 +10,5 @@ interface MoviesRepository {
 
     fun getMoviesPagingSource(): PagingSource<String, Movie>
     fun searchMoviesPagingSource(filters: SearchFilters): PagingSource<String, Movie>
-
-
+    fun searchByNamePagingSource(query: String, limit: Int): PagingSource<Int, Movie>
 }

@@ -41,5 +41,8 @@ class MoviesRepositoryImpl @Inject constructor(
         val request = FiltersRequestDto.fromFilters(filters)
         return FiltersMoviesPagingSource(api, request)
     }
+    override fun searchByNamePagingSource(query: String, limit: Int): PagingSource<Int, Movie> {
+        return SearchByNamePagingSource(api, query, limit)
+    }
 
 }
