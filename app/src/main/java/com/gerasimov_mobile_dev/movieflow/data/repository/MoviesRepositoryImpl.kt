@@ -37,7 +37,7 @@ class MoviesRepositoryImpl @Inject constructor(
     override fun getMoviesPagingSource(): PagingSource<String, Movie> {
        return MoviesPagingSource(api)
     }
-    override fun searchMoviesPagingSource(filters: SearchFilters): PagingSource<String, Movie> {
+    override fun filterMoviesPagingSource(filters: SearchFilters): PagingSource<String, Movie> {
         val request = FiltersRequestDto.fromFilters(filters)
         return FiltersMoviesPagingSource(api, request)
     }

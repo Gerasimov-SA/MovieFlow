@@ -12,10 +12,12 @@ import com.gerasimov_mobile_dev.movieflow.domain.model.Movie
 import com.gerasimov_mobile_dev.movieflow.presentation.state.SearchFilters
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
@@ -30,6 +32,8 @@ class SearchViewModel @Inject constructor(
 
     private val _filters = MutableStateFlow(SearchFilters())
     val filters: StateFlow<SearchFilters> = _filters.asStateFlow()
+    private val _query = MutableStateFlow("")
+    val query: StateFlow<String> = _query.asStateFlow()
 
     init {
         // Восстанавливаем по полям
@@ -43,19 +47,28 @@ class SearchViewModel @Inject constructor(
         )
     }
 
-    val searchFlow: Flow<PagingData<Movie>> = _filters
-        .flatMapLatest { currentFilters ->
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val searchFlow: Flow<PagingData<Movie>> = combine(_query, _filters) { q, f ->
+        if (q.isNotBlank()) {
+            // Поиск по названию
             Pager(
-                config = PagingConfig(
-                    pageSize = 20,
-                    enablePlaceholders = true,
-                    initialLoadSize = 40
-                ),
-                pagingSourceFactory = { repository.searchMoviesPagingSource(currentFilters) }
+                config = PagingConfig(pageSize = 20, enablePlaceholders = true),
+                pagingSourceFactory = { repository.searchByNamePagingSource(q, 20) }
+            ).flow
+        } else {
+            // Поиск по фильтрам
+            Pager(
+                config = PagingConfig(pageSize = 20, enablePlaceholders = true),
+                pagingSourceFactory = { repository.filterMoviesPagingSource(f) }
             ).flow
         }
+    }.flatMapLatest { it }
         .cachedIn(viewModelScope)
 
+
+    fun setQuery(newQuery: String) {
+        _query.value = newQuery
+    }
 
     fun clearAll() {
         _filters.update { it.copy(
