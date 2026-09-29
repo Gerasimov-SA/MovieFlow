@@ -17,7 +17,7 @@ data class SearchMovieDto(
     val id: Int,
     val names: List<NameDto>,
     val poster: PosterDto?,
-    val rating: RatingDto,
+    val rating: RatingDto?,
     val genres: List<GenreDto>,
     val releaseYears: List<ReleaseYearDto>,
     val alternativeName: String?,

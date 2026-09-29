@@ -45,6 +45,9 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.runtime.LaunchedEffect
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.room.util.query
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -54,22 +57,27 @@ fun SearchScreen(
     onMovieClick: (Int) -> Unit
 ) {
     val lazyPagingItems = viewModel.searchFlow.collectAsLazyPagingItems()
-    val filters by viewModel.filters.collectAsState()
+    val filters by viewModel.filters.collectAsStateWithLifecycle()
+    val currentQuery by viewModel.query.collectAsStateWithLifecycle()
 
-    val textFieldState = rememberTextFieldState()
+    val textFieldState = rememberTextFieldState( currentQuery)
     val searchBarState = rememberSearchBarState()
     val scope = rememberCoroutineScope()
     var showFiltersDialog by rememberSaveable { mutableStateOf(false) }
 
+    LaunchedEffect(textFieldState.text) {
+        viewModel.setQuery(textFieldState.text.toString())
+    }
 
     val inputField = @Composable {
         SearchBarDefaults.InputField(
             searchBarState = searchBarState,
             textFieldState = textFieldState,
             onSearch = {
-                // TODO: viewModel.updateQuery(textFieldState.text.toString())
+
                 scope.launch { searchBarState.animateToCollapsed() }
-            },
+            }
+            ,
             placeholder = { Text("Поиск по названию") },
             leadingIcon = {
                 if (searchBarState.currentValue == SearchBarValue.Expanded) {
@@ -130,8 +138,11 @@ fun SearchScreen(
                     lazyPagingItems = lazyPagingItems,
                     onMovieClick = onMovieClick
                 )
-            }
-
+            } else if(currentQuery.isNotBlank())
+            MovieListContent(
+                lazyPagingItems = lazyPagingItems,
+                onMovieClick = onMovieClick
+            )
 
         }
 
@@ -146,24 +157,24 @@ fun SearchScreen(
         )
 
         // --- Раскрытая строка (всплывает поверх списка) ---
-        ExpandedDockedSearchBar(
-            state = searchBarState,
-            inputField = inputField,
-        ) {
-
-            Column(Modifier.verticalScroll(rememberScrollState())) {
-                ListItem(
-                    headlineContent = { Text("Поиск по названию скоро будет доступен") },
-                    leadingContent = {
-                        Icon(
-                            imageVector = Icons.Default.Info,
-                            contentDescription = null
-                        )
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-        }
+//        ExpandedDockedSearchBar(
+//            state = searchBarState,
+//            inputField = inputField,
+//        ) {
+//
+//            Column(Modifier.verticalScroll(rememberScrollState())) {
+//                ListItem(
+//                    headlineContent = { Text("Начните вводить название фильма") },
+//                    leadingContent = {
+//                        Icon(
+//                            imageVector = Icons.Default.Info,
+//                            contentDescription = null
+//                        )
+//                    },
+//                    modifier = Modifier.fillMaxWidth()
+//                )
+//            }
+//        }
     }
 
     // --- Диалог фильтров ---

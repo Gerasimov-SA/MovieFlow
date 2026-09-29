@@ -9,8 +9,8 @@ import kotlin.text.ifEmpty
 fun SearchMovieDto.toDomain(): Movie {
     return Movie(
         id = id,
-        name = names.joinToString(", ") { it.name ?: enName ?: alternativeName ?: "Без названия" },
-        rating =rating?.kp ?: 0.0,
+        name = names.firstOrNull()?.name ?: enName ?: alternativeName ?: "Без названия",
+        rating = rating?.kp ?: 0.0,
         poster = poster?.previewUrl ?: poster?.url,
         year = null,
         description = null,

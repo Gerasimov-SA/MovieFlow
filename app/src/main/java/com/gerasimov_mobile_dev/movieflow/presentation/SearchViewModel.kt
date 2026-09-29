@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.update
+import kotlin.time.Duration.Companion.milliseconds
 
 
 @HiltViewModel
@@ -62,9 +63,8 @@ class SearchViewModel @Inject constructor(
                 pagingSourceFactory = { repository.filterMoviesPagingSource(f) }
             ).flow
         }
-    }.flatMapLatest { it }
+    }.debounce(300.milliseconds).distinctUntilChanged().flatMapLatest { it }
         .cachedIn(viewModelScope)
-
 
     fun setQuery(newQuery: String) {
         _query.value = newQuery
