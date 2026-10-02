@@ -37,7 +37,7 @@ class SearchByNamePagingSource(
                 val items = body.docs.map { it.toDomain() }
 
 
-                val nextKey = if (page < body.pages) page + 1 else null
+                val nextKey = if (body.pages != null && page < body.pages) page + 1 else null
 
                 LoadResult.Page(
                     data = items,

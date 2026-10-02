@@ -123,7 +123,7 @@ fun MovieItem(movie: Movie, onClick: () -> Unit) {
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    text = "Дата выхода: ${movie.year}",
+                    text = "Дата выхода: ${movie.year ?: "-"}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

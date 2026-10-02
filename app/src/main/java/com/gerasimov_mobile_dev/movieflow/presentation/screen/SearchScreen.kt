@@ -60,7 +60,7 @@ fun SearchScreen(
     val filters by viewModel.filters.collectAsStateWithLifecycle()
     val currentQuery by viewModel.query.collectAsStateWithLifecycle()
 
-    val textFieldState = rememberTextFieldState( currentQuery)
+    val textFieldState = rememberTextFieldState(currentQuery)
     val searchBarState = rememberSearchBarState()
     val scope = rememberCoroutineScope()
     var showFiltersDialog by rememberSaveable { mutableStateOf(false) }
@@ -74,20 +74,23 @@ fun SearchScreen(
             searchBarState = searchBarState,
             textFieldState = textFieldState,
             onSearch = {
+                scope.launch {
 
-                scope.launch { searchBarState.animateToCollapsed() }
-            }
-            ,
+                    searchBarState.animateToCollapsed()
+                }
+            },
             placeholder = { Text("Поиск по названию") },
             leadingIcon = {
                 if (searchBarState.currentValue == SearchBarValue.Expanded) {
                     IconButton(
                         onClick = {
-                            scope.launch { searchBarState.animateToCollapsed() }
+                            scope.launch {
+                                searchBarState.animateToCollapsed()
+                            }
                         }
                     ) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack ,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Свернуть"
                         )
                     }
@@ -106,11 +109,13 @@ fun SearchScreen(
                         }
                     }
                 ) {
-                    IconButton(onClick = { showFiltersDialog = true }) {
-                        Icon(
-                            imageVector = Icons.Default.FilterList,
-                            contentDescription = "Фильтры"
-                        )
+                    if (currentQuery.isBlank()) {
+                        IconButton(onClick = { showFiltersDialog = true }) {
+                            Icon(
+                                imageVector = Icons.Default.FilterList,
+                                contentDescription = "Фильтры"
+                            )
+                        }
                     }
                 }
             }
@@ -129,7 +134,7 @@ fun SearchScreen(
                 .padding(top = 48.dp)
                 .semantics { traversalIndex = 1f }
         ) {
-            if (filters.hasActiveFilters()) {
+            if (filters.hasActiveFilters() && currentQuery.isBlank()) {
                 ActiveFiltersRow(
                     filters = filters,
                     onClear = { viewModel.clearAll() }
@@ -138,11 +143,13 @@ fun SearchScreen(
                     lazyPagingItems = lazyPagingItems,
                     onMovieClick = onMovieClick
                 )
-            } else if(currentQuery.isNotBlank())
-            MovieListContent(
-                lazyPagingItems = lazyPagingItems,
-                onMovieClick = onMovieClick
-            )
+            } else if (currentQuery.isNotBlank()) {
+                viewModel.clearAll()
+                MovieListContent(
+                    lazyPagingItems = lazyPagingItems,
+                    onMovieClick = onMovieClick
+                )
+            }
 
         }
 
@@ -156,25 +163,6 @@ fun SearchScreen(
             inputField = inputField,
         )
 
-        // --- Раскрытая строка (всплывает поверх списка) ---
-//        ExpandedDockedSearchBar(
-//            state = searchBarState,
-//            inputField = inputField,
-//        ) {
-//
-//            Column(Modifier.verticalScroll(rememberScrollState())) {
-//                ListItem(
-//                    headlineContent = { Text("Начните вводить название фильма") },
-//                    leadingContent = {
-//                        Icon(
-//                            imageVector = Icons.Default.Info,
-//                            contentDescription = null
-//                        )
-//                    },
-//                    modifier = Modifier.fillMaxWidth()
-//                )
-//            }
-//        }
     }
 
     // --- Диалог фильтров ---
