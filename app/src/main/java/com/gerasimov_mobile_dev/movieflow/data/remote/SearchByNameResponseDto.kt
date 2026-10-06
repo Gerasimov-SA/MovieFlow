@@ -22,6 +22,7 @@ data class SearchMovieDto(
     val releaseYears: List<ReleaseYearDto>?,
     val alternativeName: String?,
     val enName: String?,
+    val year: Int?
 )
 
 @JsonClass(generateAdapter = true)

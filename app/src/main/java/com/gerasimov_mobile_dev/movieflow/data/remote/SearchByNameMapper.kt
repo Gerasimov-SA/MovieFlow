@@ -12,7 +12,7 @@ fun SearchMovieDto.toDomain(): Movie {
         name = names?.firstOrNull()?.name ?: enName ?: alternativeName ?: "Без названия",
         rating = rating?.kp ?: 0.0,
         poster = poster?.previewUrl ?: poster?.url,
-        year = releaseYears?.firstOrNull()?.start ?: releaseYears?.firstOrNull()?.end ,
+        year = year ,
         description = null,
         shortDescription = null,
         movieLength = null,
