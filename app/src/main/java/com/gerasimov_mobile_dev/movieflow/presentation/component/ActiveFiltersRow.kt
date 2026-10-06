@@ -40,11 +40,17 @@ fun ActiveFiltersRow(
             AssistChip(onClick = {}, label = { Text(it) })
         }
 
-
+        var yearTo = filters.yearTo
+        var yearFrom = filters.yearFrom
+        if (yearTo != null && yearFrom != null && yearTo < yearFrom) {
+            val temp = yearTo
+            yearTo = yearFrom
+            yearFrom = temp
+        }
         val yearText = buildString {
-            if (filters.yearFrom != null) append("от ${filters.yearFrom}")
-            if (filters.yearFrom != null && filters.yearTo != null) append(" ")
-            if (filters.yearTo != null) append("до ${filters.yearTo}")
+            if (yearFrom != null) append("от ${yearFrom}")
+            if (yearFrom != null && yearTo != null) append(" ")
+            if (yearTo != null) append("до ${yearTo}")
         }
         if (yearText.isNotEmpty()) {
             AssistChip(onClick = {}, label = { Text("Год $yearText") })

@@ -12,10 +12,17 @@ data class FiltersRequestDto(
 ) {
     companion object {
         fun fromFilters(filters: SearchFilters): FiltersRequestDto {
+            var yearTo = filters.yearTo
+            var yearFrom = filters.yearFrom
+            if (yearTo != null && yearFrom != null && yearTo < yearFrom) {
+                val temp = yearTo
+                yearTo = yearFrom
+                yearFrom = temp
+            }
             val yearString = buildString {
-                if (filters.yearFrom != null) append(filters.yearFrom)
-                if (filters.yearFrom != null && filters.yearTo != null) append("-")
-                if (filters.yearTo != null && filters.yearTo != filters.yearFrom) append(filters.yearTo)
+                if (yearFrom != null) append(yearFrom)
+                if (yearFrom != null && yearTo != null) append("-")
+                if (yearTo != null && yearTo != yearFrom) append(yearTo)
             }
 
             val ratingString = buildString {
