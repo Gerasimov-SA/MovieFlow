@@ -57,8 +57,9 @@ fun FiltersDialog(
     var genreMenuExpanded by remember { mutableStateOf(false) }
 
     // Диапазон лет: по умолчанию от MIN_YEAR до MAX_YEAR
-    var yearFromState by remember { mutableStateOf(currentFilters.yearFrom) }
-    var yearToState by remember { mutableStateOf(currentFilters.yearTo) }
+    val currentYear = remember { Calendar.getInstance().get(Calendar.YEAR) }
+    var yearFromState by remember { mutableStateOf(currentFilters.yearFrom ?: 1900) }
+    var yearToState by remember { mutableStateOf(currentFilters.yearTo ?: currentYear) }
 
     // Диапазон рейтинга: 0.0 — 10.0
     var ratingStart by remember {
@@ -67,6 +68,7 @@ fun FiltersDialog(
     var ratingEnd by remember {
         mutableStateOf(currentFilters.maxRating?.toFloat() ?: 10f)
     }
+
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -146,7 +148,8 @@ fun FiltersDialog(
                     },
                     onToYearChange = { yearTo ->
                         yearToState = yearTo
-                    }
+                    },
+                    currentYear = currentYear
                 )
 
 
@@ -203,10 +206,11 @@ fun FiltersDialog(
 fun YearPickerRow(
     fromYear: Int?,
     toYear: Int?,
-    onFromYearChange: (Int?) -> Unit,
-    onToYearChange: (Int?) -> Unit
+    onFromYearChange: (Int) -> Unit,
+    onToYearChange: (Int) -> Unit,
+    currentYear:Int
 ) {
-    val currentYear = remember { Calendar.getInstance().get(Calendar.YEAR) }
+
     val yearsRange = (1900..currentYear).toList()
 
     Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -242,7 +246,7 @@ fun YearPickerRow(
                 DropdownMenuItem(
                     text = { Text("любой") },
                     onClick = {
-                        onFromYearChange(null)
+                        onFromYearChange(1900)
                         fromExpanded = false
                     }
                 )
@@ -290,7 +294,7 @@ fun YearPickerRow(
                 DropdownMenuItem(
                     text = { Text("любой") },
                     onClick = {
-                        onToYearChange(null)
+                        onToYearChange(currentYear)
                         toExpanded = false
                     }
                 )
