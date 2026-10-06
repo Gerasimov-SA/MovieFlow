@@ -185,8 +185,8 @@ fun FiltersDialog(
                             genre = genre,
                             yearFrom = yearFromState,
                             yearTo = yearToState,
-                            minRating = if (ratingStart == 0f) null else ratingStart.toDouble(),
-                            maxRating = if (ratingEnd == 10f) null else ratingEnd.toDouble()
+                            minRating =  ratingStart.toDouble(),
+                            maxRating =  ratingEnd.toDouble()
                         )
                     )
                 }
