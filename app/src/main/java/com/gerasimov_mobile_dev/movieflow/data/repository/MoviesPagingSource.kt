@@ -1,6 +1,5 @@
 package com.gerasimov_mobile_dev.movieflow.data.repository
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.gerasimov_mobile_dev.movieflow.BuildConfig
@@ -25,11 +24,9 @@ class MoviesPagingSource @Inject constructor(
                 val response = api.getMovies(
                     apiKey = BuildConfig.PK_API_KEY,
                     limit = limit,
-                    next = cursor
+                    next = cursor,
+                    type = listOf("movie")
                 )
-
-
-
 
                 if (!response.isSuccessful) {
                     return@withContext LoadResult.Error(Exception("Ошибка API при загрузке страницы: ${response.code()}"))
