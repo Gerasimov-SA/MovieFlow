@@ -9,6 +9,5 @@ data class SearchFilters(
     val maxRating: Double? = null,
 ) {
     fun hasActiveFilters(): Boolean =
-        type != null || genre != null || yearFrom != null || yearTo != null ||
-                minRating != null || maxRating != null
+        type != null || genre != null || yearFrom != null || yearTo != null || minRating != null || maxRating != null
 }

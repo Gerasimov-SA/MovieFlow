@@ -26,11 +26,9 @@ data class FiltersRequestDto(
             }
 
             val ratingString = buildString {
-                if (filters.minRating != null) append(filters.minRating)
+                if (filters.minRating != null) append("%.1f".format(filters.minRating))
                 if (filters.minRating != null && filters.maxRating != null) append("-")
-                if (filters.maxRating != null && filters.maxRating != filters.minRating) append(
-                    filters.maxRating
-                )
+                if (filters.maxRating != null && filters.maxRating != filters.minRating) append("%.1f".format(filters.maxRating))
             }
 
             return FiltersRequestDto(
