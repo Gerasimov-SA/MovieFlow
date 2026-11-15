@@ -1,7 +1,6 @@
 # MovieFlow
 
-Приложение для поиска и просмотра фильмов: каталог, рейтинги, описания и
-подборки. Доступно на Android.
+A mobile Android app for discovering movies and TV series: browse the catalog, check ratings and descriptions, and use search & filtering.
 
 <p align="center">
   <img src="screenshots/1.png" width="200" />
@@ -9,25 +8,26 @@
   <img src="screenshots/3.png" width="200" />
 </p>
 
-## ✨ Возможности
+## ✨ Features
 
-- 🎞 Каталог фильмов с постерами, рейтингами и описаниями
-- 📅 Экран с деталями фильма: постер, описание, рейтинг, актеры
-- 🔍 Поиск по названию, фильтры по жанрам, году и рейтингу
-- 💾 Сохранение избранного (в разработке)
+- 🎬 Movie catalog with posters, ratings, and detailed descriptions  
+- 📺 Detailed movie screen: poster, synopsis, rating, cast, and key info  
+- 🔍 Smart search by title plus filters by genre, release year, and rating  
+- ❤️ Favorites section — currently under development  
 
-## 🛠 Технологии
+## 🛠 Tech Stack
 
-- **Kotlin** + **Jetpack Compose**
-- Архитектура: **MVVM**
-- **Coroutines / Flow** — асинхронность
-- **Retrofit** — работа с API
-- DI - **Hilt**
+- **Kotlin** + **Jetpack Compose** for modern, reactive UI  
+- Architecture: **MVVM** (clean separation of concerns)  
+- Asynchronous operations via **Coroutines** and **Flow**  
+- Network layer with **Retrofit** for API integration  
+- Dependency injection using **Hilt**  
 
-## 🚀 Установка
+## 🚀 Installation
 
-Скачайте APK из раздела Releases или соберите проект в Android Studio
+Download the APK from the Releases section or build the project locally in Android Studio.
 
-## 📥 Скачать
+## 📥 Download
 
 [APK:]
+
