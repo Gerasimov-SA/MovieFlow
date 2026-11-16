@@ -1,6 +1,7 @@
 package com.gerasimov_mobile_dev.movieflow.di
 
 import android.content.Context
+import com.gerasimov_mobile_dev.movieflow.data.local.FavoriteMovieDao
 import com.gerasimov_mobile_dev.movieflow.data.remote.PoiskKinoApi
 import com.gerasimov_mobile_dev.movieflow.data.repository.MoviesPagingSource
 import com.gerasimov_mobile_dev.movieflow.data.repository.MoviesRepository
@@ -22,8 +23,10 @@ object AppModule {
     @Provides
     @Singleton
     fun provideMoviesRepository(
-        api: PoiskKinoApi
+        api: PoiskKinoApi,
+        favoriteMovieDao: FavoriteMovieDao
     ): MoviesRepository = MoviesRepositoryImpl(
-        api = api
+        api = api,
+        favoriteMovieDao = favoriteMovieDao
     )
 }
