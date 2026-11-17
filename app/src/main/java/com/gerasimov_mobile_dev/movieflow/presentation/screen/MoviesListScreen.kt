@@ -1,11 +1,15 @@
 package com.gerasimov_mobile_dev.movieflow.presentation.screen
 
 
+import androidx.compose.animation.animateBounds
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,6 +25,7 @@ import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
 import com.gerasimov_mobile_dev.movieflow.R
 import com.gerasimov_mobile_dev.movieflow.domain.model.Movie
+import com.gerasimov_mobile_dev.movieflow.presentation.FavoritesViewModel
 import com.gerasimov_mobile_dev.movieflow.presentation.MoviesViewModel
 import com.gerasimov_mobile_dev.movieflow.presentation.component.AnimatedSkeletonBox
 import com.gerasimov_mobile_dev.movieflow.presentation.component.MovieListContent
@@ -28,63 +33,76 @@ import com.gerasimov_mobile_dev.movieflow.presentation.component.MovieListConten
 @Composable
 fun MoviesListScreen(
     viewModel: MoviesViewModel = hiltViewModel(),
+    favoritesViewModel: FavoritesViewModel = hiltViewModel(),
     onMovieClick: (Int) -> Unit
 ) {
     val lazyPagingItems = viewModel.moviesFlow.collectAsLazyPagingItems()
-    MovieListContent(lazyPagingItems, onMovieClick)
+    val favoriteIds by favoritesViewModel.favoriteIds.collectAsState()
+
+    MovieListContent(
+        lazyPagingItems = lazyPagingItems,
+        onMovieClick = onMovieClick,
+        favoriteIds = favoriteIds,
+        onFavoriteClick = { movie -> favoritesViewModel.toggleFavorite(movie) }
+    )
 
 }
 
 @Composable
-fun MovieItem(movie: Movie, onClick: () -> Unit) {
+fun MovieItem(
+    movie: Movie,
+    onClick: () -> Unit,
+    isFavorite: Boolean = false,
+    onFavoriteClick: (Movie) -> Unit = {},
+    modifier: Modifier = Modifier,
+) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
+        modifier = modifier
             .clickable { onClick() },
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-
-        ) {
+    ) {
         Row(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
                 .padding(12.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
-                modifier = Modifier
+                modifier = modifier
                     .size(150.dp)
                     .clip(RoundedCornerShape(8.dp))
             ) {
                 SubcomposeAsyncImage(
                     model = movie.poster ?: R.drawable.ic_no_poster2,
                     contentDescription = movie.name,
-                    modifier = Modifier
+                    modifier = modifier
                         .size(150.dp)
                         .clip(RoundedCornerShape(8.dp)),
                     contentScale = ContentScale.Crop,
                     loading = {
                         AnimatedSkeletonBox(
-                            modifier = Modifier.fillMaxSize(),
+                            modifier = modifier.fillMaxSize(),
                             cornerRadius = 8.dp
                         )
                     },
                     error = {
-                      AsyncImage(
-                          model =  R.drawable.ic_no_poster2,
-                          contentDescription = movie.name,
-                          modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(8.dp)),
-                          contentScale = ContentScale.Crop
-                      )
+                        AsyncImage(
+                            model = R.drawable.ic_no_poster2,
+                            contentDescription = movie.name,
+                            modifier = modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(8.dp)),
+                            contentScale = ContentScale.Crop
+                        )
                     }
 
                 )
                 val (color, textColor) = getRatingColors(movie.rating)
                 if (movie.rating > 0.0) {
                     Box(
-                        modifier = Modifier
+                        modifier = modifier
                             .align(Alignment.TopEnd)
                             .offset(x = (-8).dp, y = 8.dp)
                             .background(color, RoundedCornerShape(4.dp))
@@ -101,7 +119,7 @@ fun MovieItem(movie: Movie, onClick: () -> Unit) {
             }
 
             Column(
-                modifier = Modifier.weight(1f),
+                modifier = modifier.weight(1f),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
@@ -110,18 +128,34 @@ fun MovieItem(movie: Movie, onClick: () -> Unit) {
                     fontWeight = FontWeight.Bold
                 )
 
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = modifier.height(4.dp))
 
                 Text(
                     text = "Дата выхода: ${movie.year ?: "-"}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = modifier.height(4.dp))
 
-                Text(text = "Жанр: ${movie.genres}",
+                Text(
+                    text = "Жанр: ${movie.genres}",
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            IconButton(
+                onClick = { onFavoriteClick(movie) },
+                modifier = modifier
+                    .align(Alignment.Top)
+                    .size(32.dp)
+            ) {
+                Icon(
+                    imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                    contentDescription = "В избранное",
+                    tint = if (isFavorite) MaterialTheme.colorScheme.primary else Color.White.copy(
+                        alpha = 0.8f
+                    )
+                )
             }
         }
     }
