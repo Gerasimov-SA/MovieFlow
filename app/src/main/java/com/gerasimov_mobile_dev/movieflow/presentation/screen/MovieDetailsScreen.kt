@@ -16,6 +16,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -73,7 +75,9 @@ fun MovieDetailsScreen(
             if (movie != null) {
                 MovieDetailsContent(
                     movie = movie,
-                    onBackClick = onBackClick
+                    onBackClick = onBackClick,
+                    isFavorite = state.isFavorite,
+                    onFavoriteClick = viewModel::toggleFavorite,
                 )
             }
         }
@@ -83,7 +87,9 @@ fun MovieDetailsScreen(
 @Composable
 private fun MovieDetailsContent(
     movie: Movie,
-    onBackClick: () -> Boolean
+    onBackClick: () -> Boolean,
+    isFavorite: Boolean,
+    onFavoriteClick: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -120,6 +126,20 @@ private fun MovieDetailsContent(
                     imageVector = Icons.Default.ArrowBack,
                     contentDescription = "Назад",
                     tint = Color.White
+                )
+
+
+            }
+            IconButton(
+                onClick = onFavoriteClick,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .align(Alignment.TopEnd)
+            ) {
+                Icon(
+                    imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                    contentDescription = if (isFavorite) "Убрать из избранного" else "Добавить в избранное",
+                    tint = if (isFavorite) MaterialTheme.colorScheme.primary else Color.White
                 )
             }
         }

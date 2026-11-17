@@ -24,7 +24,9 @@ import com.gerasimov_mobile_dev.movieflow.presentation.screen.MovieItem
 @Composable
 fun MovieListContent(
     lazyPagingItems: LazyPagingItems<Movie>,
-    onMovieClick: (Int) -> Unit
+    onMovieClick: (Int) -> Unit,
+    favoriteIds: Set<Int> = emptySet(),
+    onFavoriteClick: (Movie) -> Unit = {}
 ) {
     val refreshState = lazyPagingItems.loadState.refresh
     when (refreshState) {
@@ -68,7 +70,9 @@ fun MovieListContent(
                         } else {
                             MovieItem(
                                 movie = movie,
-                                onClick = { onMovieClick(movie.id) }
+                                onClick = { onMovieClick(movie.id) },
+                                isFavorite = favoriteIds.contains(movie.id),
+                                onFavoriteClick = onFavoriteClick
                             )
                         }
                     }

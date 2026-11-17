@@ -4,14 +4,11 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [MovieEntity::class],      // Какие таблицы (сущности) будут в базе
-    version = 1,                          // Версия БД: при изменении структуры увеличивай на 1
+    entities = [FavoriteMovieEntity::class],      // Какие таблицы (сущности) будут в базе
+    version = 2,                          // Версия БД: при изменении структуры увеличивай на 1
     exportSchema = false                  // Отключаем автоэкспорт схемы (чтобы не засорять проект файлами .json)
 )
 abstract class MoviesDatabase : RoomDatabase() {
+    abstract fun favoriteMovieDao(): FavoriteMovieDao
 
-    // Экземпляр DAO: через него будем делать insert/select/delete
-    abstract fun moviesDao(): MoviesDao
-
-    // Если позже добавишь другие таблицы — просто создай здесь ещё abstract fun для других DAO
 }

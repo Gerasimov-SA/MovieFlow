@@ -16,6 +16,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.gerasimov_mobile_dev.movieflow.presentation.screen.FavoritesScreen
 import com.gerasimov_mobile_dev.movieflow.presentation.screen.MovieDetailsScreen
 import com.gerasimov_mobile_dev.movieflow.presentation.screen.MoviesListScreen
 import com.gerasimov_mobile_dev.movieflow.presentation.screen.SearchScreen
@@ -44,14 +45,11 @@ fun AppNavHost(
                             navController.navigate("movie/$movieId")
                         }
                     )
-                    Destination.FAVORITES -> {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text("Избранное скоро будет добавлено")
+                    Destination.FAVORITES -> FavoritesScreen(
+                        onMovieClick = { movieId ->
+                            navController.navigate("movie/$movieId")
                         }
-                    }
+                    )
                 }
             }
         }
