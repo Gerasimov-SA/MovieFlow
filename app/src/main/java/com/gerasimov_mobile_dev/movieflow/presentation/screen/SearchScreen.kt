@@ -40,13 +40,17 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.gerasimov_mobile_dev.movieflow.presentation.FavoritesViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel = hiltViewModel(),
+    favoritesViewModel: FavoritesViewModel = hiltViewModel(),
     onMovieClick: (Int) -> Unit
 ) {
     val lazyPagingItems = viewModel.searchFlow.collectAsLazyPagingItems()
@@ -57,7 +61,7 @@ fun SearchScreen(
     val searchBarState = rememberSearchBarState()
     val scope = rememberCoroutineScope()
     var showFiltersDialog by rememberSaveable { mutableStateOf(false) }
-
+    val favoriteIds by favoritesViewModel.favoriteIds.collectAsState()
     LaunchedEffect(textFieldState.text) {
         viewModel.setQuery(textFieldState.text.toString())
     }
@@ -134,13 +138,17 @@ fun SearchScreen(
                 )
                 MovieListContent(
                     lazyPagingItems = lazyPagingItems,
-                    onMovieClick = onMovieClick
+                    onMovieClick = onMovieClick,
+                    favoriteIds = favoriteIds,
+                    onFavoriteClick = { movie -> favoritesViewModel.toggleFavorite(movie) }
                 )
             } else if (currentQuery.isNotBlank()) {
                 viewModel.clearAll()
                 MovieListContent(
                     lazyPagingItems = lazyPagingItems,
-                    onMovieClick = onMovieClick
+                    onMovieClick = onMovieClick,
+                    favoriteIds = favoriteIds,
+                    onFavoriteClick = { movie -> favoritesViewModel.toggleFavorite(movie) }
                 )
             }
 
