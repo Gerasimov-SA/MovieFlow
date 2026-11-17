@@ -53,10 +53,7 @@ fun FavoritesScreen(
                 onFavoriteClick = { movie ->
                     viewModel.toggleFavorite(movie)
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-                    .animateItem(),
+                modifier = Modifier.animateItem()
             )
         }
     }

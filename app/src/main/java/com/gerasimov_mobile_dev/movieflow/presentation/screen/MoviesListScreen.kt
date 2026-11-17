@@ -57,33 +57,33 @@ fun MovieItem(
     modifier: Modifier = Modifier,
 ) {
     Card(
-        modifier = modifier
+        modifier = modifier.fillMaxWidth().padding(8.dp)
             .clickable { onClick() },
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
     ) {
         Row(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(12.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
-                modifier = modifier
+                modifier = Modifier
                     .size(150.dp)
                     .clip(RoundedCornerShape(8.dp))
             ) {
                 SubcomposeAsyncImage(
                     model = movie.poster ?: R.drawable.ic_no_poster2,
                     contentDescription = movie.name,
-                    modifier = modifier
+                    modifier = Modifier
                         .size(150.dp)
                         .clip(RoundedCornerShape(8.dp)),
                     contentScale = ContentScale.Crop,
                     loading = {
                         AnimatedSkeletonBox(
-                            modifier = modifier.fillMaxSize(),
+                            modifier = Modifier.fillMaxSize(),
                             cornerRadius = 8.dp
                         )
                     },
@@ -91,7 +91,7 @@ fun MovieItem(
                         AsyncImage(
                             model = R.drawable.ic_no_poster2,
                             contentDescription = movie.name,
-                            modifier = modifier
+                            modifier = Modifier
                                 .fillMaxSize()
                                 .clip(RoundedCornerShape(8.dp)),
                             contentScale = ContentScale.Crop
@@ -102,7 +102,7 @@ fun MovieItem(
                 val (color, textColor) = getRatingColors(movie.rating)
                 if (movie.rating > 0.0) {
                     Box(
-                        modifier = modifier
+                        modifier = Modifier
                             .align(Alignment.TopEnd)
                             .offset(x = (-8).dp, y = 8.dp)
                             .background(color, RoundedCornerShape(4.dp))
@@ -119,7 +119,7 @@ fun MovieItem(
             }
 
             Column(
-                modifier = modifier.weight(1f),
+                modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
@@ -128,14 +128,14 @@ fun MovieItem(
                     fontWeight = FontWeight.Bold
                 )
 
-                Spacer(modifier = modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
                     text = "Дата выхода: ${movie.year ?: "-"}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                Spacer(modifier = modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
                     text = "Жанр: ${movie.genres}",
@@ -145,16 +145,14 @@ fun MovieItem(
             }
             IconButton(
                 onClick = { onFavoriteClick(movie) },
-                modifier = modifier
+                modifier = Modifier
                     .align(Alignment.Top)
                     .size(32.dp)
             ) {
                 Icon(
                     imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                     contentDescription = "В избранное",
-                    tint = if (isFavorite) MaterialTheme.colorScheme.primary else Color.White.copy(
-                        alpha = 0.8f
-                    )
+                    tint = if (isFavorite) MaterialTheme.colorScheme.primary else Color.White.copy(alpha = 0.8f)
                 )
             }
         }
