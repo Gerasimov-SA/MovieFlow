@@ -17,7 +17,8 @@ import javax.inject.Inject
 data class DetailsUiState(
     val isLoading: Boolean = false,
     val error: String? = null,
-    val movie: Movie? = null
+    val movie: Movie? = null,
+    val isFavorite: Boolean = false
 )
 
 @HiltViewModel
@@ -34,6 +35,13 @@ class MovieDetailsViewModel @Inject constructor(
     init {
         if (movieId > 0) {
             getDetails(movieId)
+
+            viewModelScope.launch {
+                repository.observeIsFavorite(movieId)
+                    .collect { isFavorite ->
+                        _uiState.update { it.copy(isFavorite = isFavorite) }
+                    }
+            }
         } else {
             _uiState.update {
                 it.copy(error = "Некорректный ID фильма", isLoading = false)
@@ -63,4 +71,10 @@ class MovieDetailsViewModel @Inject constructor(
         if (movieId > 0) getDetails(movieId)
     }
 
+    fun toggleFavorite() {
+        val movie = uiState.value.movie ?: return
+        viewModelScope.launch {
+            repository.toggleFavorite(movie)
+        }
+    }
 }
