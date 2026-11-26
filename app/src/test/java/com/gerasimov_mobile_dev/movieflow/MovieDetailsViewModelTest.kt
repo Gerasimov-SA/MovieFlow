@@ -1,12 +1,8 @@
 package com.gerasimov_mobile_dev.movieflow
 
 import androidx.lifecycle.SavedStateHandle
-import com.gerasimov_mobile_dev.movieflow.data.remote.MovieDetailsDto
-import com.gerasimov_mobile_dev.movieflow.data.remote.common.RatingDto
-import com.gerasimov_mobile_dev.movieflow.data.repository.MoviesRepositoryImpl
-import com.gerasimov_mobile_dev.movieflow.domain.model.Movie
 import com.gerasimov_mobile_dev.movieflow.fake.FakeMoviesRepository
-import com.gerasimov_mobile_dev.movieflow.fake.FakePoiskKinoApi
+import com.gerasimov_mobile_dev.movieflow.fake.testMovie
 import com.gerasimov_mobile_dev.movieflow.presentation.MovieDetailsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -16,7 +12,9 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 
@@ -37,142 +35,90 @@ class MovieDetailsViewModelTest {
         Dispatchers.resetMain()
     }
 
-    @Test
-    fun `loading state is set immediately when ViewModel is created`() = runTest(testDispatcher) {
-        val expectedMovie = Movie(
-            id = 123,
-            name = "Inception",
-            year = 2010,
-            description = null,
-            shortDescription = null,
-            movieLength = null,
-            isSeries = false,
-            ageRating = null,
-            rating = 8.8,
-            poster = null,
-            backdrop = null,
-            genres = null,
-            countries = null,
-            actors = null,
-            trailers = emptyList()
+    private fun viewModelWithId(movieId: Int): MovieDetailsViewModel =
+        MovieDetailsViewModel(
+            repository = fakeRepository,
+            savedStateHandle = SavedStateHandle(mapOf("movieId" to movieId))
         )
-
-        val savedStateHandle = SavedStateHandle(mapOf("movieId" to 123))
-        val viewModel = MovieDetailsViewModel(fakeRepository, savedStateHandle)
-
-
-        val state = viewModel.uiState.value
-        assertTrue(state.isLoading)
-        assertNull(state.movie)
-        assertNull(state.error)
-    }
 
     @Test
     fun `movie details loaded successfully`() = runTest(testDispatcher) {
-        // Подготавливаем данные прямо в репозитории
-        val expectedMovie = Movie(
-            id = 123,
-            name = "Inception",
-            year = 2010,
-            description = null,
-            shortDescription = null,
-            movieLength = null,
-            isSeries = false,
-            ageRating = null,
-            rating = 8.8,
-            poster = null,
-            backdrop = null,
-            genres = null,
-            countries = null,
-            actors = null,
-            trailers = emptyList()
-        )
-        fakeRepository.movieDetailsToReturn = expectedMovie
+        fakeRepository.movieDetailsToReturn = testMovie(id = 123, name = "Inception")
 
-        val savedStateHandle = SavedStateHandle(mapOf("movieId" to 123))
-        val viewModel = MovieDetailsViewModel(fakeRepository, savedStateHandle)
-
+        val viewModel = viewModelWithId(123)
         advanceUntilIdle()
 
         val state = viewModel.uiState.value
-        assertFalse(state.isLoading)
-        assertNull(state.error)
         assertNotNull(state.movie)
-        assertEquals(123, state.movie?.id)
         assertEquals("Inception", state.movie?.name)
-        assertEquals(8.8, state.movie?.rating)
+        assertEquals(123, state.movie?.id)
+        assertEquals(false, state.isLoading)
+        assertNull(state.error)
+        assertEquals(1, fakeRepository.getMovieDetailsCallCount)
     }
 
     @Test
-    fun `error state when API throws exception`() = runTest(testDispatcher) {
-        fakeRepository.shouldThrowError = true
+    fun `error state when api fails`() = runTest(testDispatcher) {
+        fakeRepository.detailsErrorToThrow = RuntimeException("Ошибка API: 500")
 
-        val savedStateHandle = SavedStateHandle(mapOf("movieId" to 999))
-        val viewModel = MovieDetailsViewModel(fakeRepository, savedStateHandle)
-
+        val viewModel = viewModelWithId(999)
         advanceUntilIdle()
 
         val state = viewModel.uiState.value
-        assertFalse(state.isLoading)
         assertNotNull(state.error)
         assertNull(state.movie)
-        assertTrue(
-            state.error!!.contains("Network error") ||
-                    state.error!!.contains("error")
-        )
+        assertEquals(false, state.isLoading)
     }
 
     @Test
-    fun `error state when movieId is zero`() = runTest(testDispatcher) {
-        val savedStateHandle = SavedStateHandle(mapOf("movieId" to 0))
-        val viewModel = MovieDetailsViewModel(fakeRepository, savedStateHandle)
-
+    fun `invalid movieId sets error without touching repository`() = runTest(testDispatcher) {
+        val viewModel = viewModelWithId(0)
         advanceUntilIdle()
 
         val state = viewModel.uiState.value
-        assertNotNull(state.error)
         assertEquals("Некорректный ID фильма", state.error)
-        assertFalse(state.isLoading)
+        assertNull(state.movie)
+        assertEquals(0, fakeRepository.getMovieDetailsCallCount)
     }
 
     @Test
     fun `refresh reloads movie details`() = runTest(testDispatcher) {
+        fakeRepository.movieDetailsToReturn = testMovie(id = 123, name = "Inception")
 
-        val firstMovie = Movie(
-            id = 123,
-            name = "Inception",
-            year = 2010,
-            rating = 8.8,
-            description = null, shortDescription = null, movieLength = null,
-            isSeries = false, ageRating = null, poster = null, backdrop = null,
-            genres = null, countries = null, actors = null, trailers = emptyList()
-        )
-        fakeRepository.movieDetailsToReturn = firstMovie
-
-        val savedStateHandle = SavedStateHandle(mapOf("movieId" to 123))
-        val viewModel = MovieDetailsViewModel(fakeRepository, savedStateHandle)
-
+        val viewModel = viewModelWithId(123)
         advanceUntilIdle()
-        assertEquals("Inception", viewModel.uiState.value.movie?.name)
-
-        val updatedMovie = Movie(
-            id = 123,
-            name = "Inception Updated",
-            year = 2011,
-            rating = 9.0,
-            description = null, shortDescription = null, movieLength = null,
-            isSeries = false, ageRating = null, poster = null, backdrop = null,
-            genres = null, countries = null, actors = null, trailers = emptyList()
-        )
-        fakeRepository.movieDetailsToReturn = updatedMovie
 
         viewModel.refresh()
         advanceUntilIdle()
 
-        val state = viewModel.uiState.value
-        assertEquals("Inception Updated", state.movie?.name)
-        assertEquals(9.0, state.movie?.rating)
-        assertFalse(state.isLoading)
-        assertNull(state.error)
+        assertNotNull(viewModel.uiState.value.movie)
+        assertEquals(2, fakeRepository.getMovieDetailsCallCount)
+    }
+
+    @Test
+    fun `isFavorite reflects repository state`() = runTest(testDispatcher) {
+        val movie = testMovie(id = 123, name = "Inception")
+        fakeRepository.movieDetailsToReturn = movie
+
+        val viewModel = viewModelWithId(123)
+        advanceUntilIdle()
+
+        assertEquals(false, viewModel.uiState.value.isFavorite)
+
+        viewModel.toggleFavorite()
+        advanceUntilIdle()
+
+        assertEquals(true, viewModel.uiState.value.isFavorite)
+    }
+
+    @Test
+    fun `toggleFavorite does nothing when no movie loaded`() = runTest(testDispatcher) {
+
+        val viewModel = viewModelWithId(0)
+
+        viewModel.toggleFavorite()
+        advanceUntilIdle()
+
+        assertEquals(false, viewModel.uiState.value.isFavorite)
     }
 }

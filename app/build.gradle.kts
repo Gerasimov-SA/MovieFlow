@@ -64,9 +64,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.core.ktx)
     implementation(libs.material)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(libs.androidx.junit)
+
 
     // Core
     implementation(libs.kotlin.stdlib)
@@ -111,14 +109,11 @@ dependencies {
     // JUnit + корутины для тестов
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
-
     testImplementation(libs.turbine)
-
     testImplementation(libs.truth)
-
     testImplementation(libs.mockk)
-    testImplementation (libs.kotlinx.coroutines.test)
-//    // Logging
-//    implementation(libs.timber)
     testImplementation(kotlin("test"))
+    testImplementation(libs.androidx.paging.testing)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.junit)
 }

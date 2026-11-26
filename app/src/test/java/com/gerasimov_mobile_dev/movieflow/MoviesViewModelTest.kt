@@ -1,15 +1,17 @@
 package com.gerasimov_mobile_dev.movieflow
 
-import com.gerasimov_mobile_dev.movieflow.domain.model.Movie
+import androidx.paging.testing.asSnapshot
 import com.gerasimov_mobile_dev.movieflow.fake.FakeMoviesRepository
+import com.gerasimov_mobile_dev.movieflow.fake.testMovie
 import com.gerasimov_mobile_dev.movieflow.presentation.MoviesViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
-import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
@@ -33,31 +35,24 @@ class MoviesViewModelTest {
     }
 
     @Test
-    fun `moviesFlow is initialized and not null`() {
-        assertNotNull(viewModel.moviesFlow)
-    }
-
-    @Test
-    fun `repository is wired to ViewModel`() {
-        val pagingSource = fakeRepo.getMoviesPagingSource()
-        assertNotNull(pagingSource)
-    }
-
-    @Test
-    fun `repository PagingSource factory returns data without error`() {
+    fun `paging flow emits repository data`() = runTest(testDispatcher) {
         fakeRepo.moviesToReturn = listOf(
-            Movie(
-                id = 1, name = "Inception",
-                rating = 8.8, year = 2010,
-                description = null, shortDescription = null,
-                movieLength = null, isSeries = null,
-                ageRating = null, poster = null, backdrop = null,
-                genres = null, countries = null, actors = null,
-                trailers = emptyList()
-            )
+            testMovie(id = 1, name = "Inception"),
+            testMovie(id = 2, name = "Interstellar")
         )
 
-        val pagingSource = fakeRepo.getMoviesPagingSource()
-        assertNotNull(pagingSource)
+        val snapshot = viewModel.moviesFlow.asSnapshot()
+
+        assertEquals(2, snapshot.size)
+        assertEquals("Inception", snapshot[0].name)
+        assertEquals("Interstellar", snapshot[1].name)
+    }
+
+    @Test
+    fun `empty repository data produces empty list`() = runTest(testDispatcher) {
+
+        val snapshot = viewModel.moviesFlow.asSnapshot()
+
+        assertEquals(0, snapshot.size)
     }
 }
