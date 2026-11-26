@@ -1,6 +1,79 @@
 <resources>
     <string name="app_name">MovieFlow</string>
-    <string name="nav_movies">Фильмы</string>
+    <!-- Bottom navigation -->
+    <string name="nav_movies">Главная</string>
     <string name="nav_search">Поиск</string>
     <string name="nav_favorites">Избранное</string>
+    <!-- MoviesListScreen -->
+    <string name="movie_name">Без названия</string>
+    <string name="movie_year">Дата выхода: %1$s</string>
+    <string name="movie_genre">Жанр: %1$s</string>
+    <string name="add_to_favorites_icon_description">Добавить в избранное</string>
+    <!-- MovieDetailsScreen -->
+    <string name="arrow_back_icon_description">Назад</string>
+    <string name="remove_from_favorites_icon_description">Убрать из избранного</string>
+    <string name="series">Сериал</string>
+    <string name="rating_with_star">★ %1$.1f</string>
+    <string name="movie_length_minutes">%1$d мин</string>
+    <string name="age_rating">%1$s+</string>
+    <string name="details_movie_genre">Жанр</string>
+    <string name="details_movie_countries">Страны</string>
+    <string name="movie_description_label">Описание</string>
+    <string name="movie_actors_label">В ролях</string>
+    <string name="trailers_label">Трейлеры</string>
+    <string name="movie_trailer_default_name">Трейлер</string>
+    <!-- SearchScreen -->
+    <string name="search_by_name_hint">Поиск по названию</string>
+    <string name="collapse_search_bar_icon_description">Свернуть</string>
+    <string name="search_icon_description">Поиск</string>
+    <string name="filters_icon_description">Фильтры</string>
+    <!-- FiltersDialog -->
+    <string name="filters_title">Фильтры</string>
+    <string name="filters_type_label">Тип</string>
+    <string name="filters_movie_label">Фильм</string>
+    <string name="filters_series_label">Сериал</string>
+    <string name="filters_any">любой</string>
+    <string name="filters_rating_from_to">Рейтинг: %1$s — %2$s</string>
+    <string name="filters_apply_label">Применить</string>
+    <string name="filters_cancel_label">Отмена</string>
+    <string name="filters_from_label">От</string>
+    <string name="filters_to_label">До</string>
+    <!-- FavoritesScreen-->
+    <string name="favorites_empty_message">Здесь пока ничего нет. Добавьте фильмы сердечком</string>
+    <!-- ActiveFiltersRow-->
+    <string name="active_filters_from">от %1$d</string>
+    <string name="active_filters_to">до %1$d</string>
+    <string name="active_filters_year">Год %1$s</string>
+    <string name="active_filters_rating_from">от %1$s</string>
+    <string name="active_filters_rating_to">до %1$s</string>
+    <string name="active_filters_rating">Рейтинг %1$s</string>
+    <string name="active_filters_reset">Сбросить</string>
+    <!-- ErrorScreen-->
+    <string name="error_message">Ошибка: %1$s</string>
+    <string name="error_try_again">Попробовать снова</string>
+    <string name="error_network">Не удалось загрузить фильмы</string>
+    <string name="movie_empty">Фильмов нет</string>
+    <string name="error_retry_button">Ошибка загрузки. Повторить</string>
+    <!-- Genres -->
+    <string name="genre_drama">драма</string>
+    <string name="genre_comedy">комедия</string>
+    <string name="genre_thriller">триллер</string>
+    <string name="genre_action">боевик</string>
+    <string name="genre_horror">ужасы</string>
+    <string name="genre_sci_fi">фантастика</string>
+    <string name="genre_fantasy">фэнтези</string>
+    <string name="genre_melodrama">мелодрама</string>
+    <string name="genre_detective">детектив</string>
+    <string name="genre_anime">аниме</string>
+    <string name="genre_animation">анимация</string>
+    <string name="genre_biography">биография</string>
+    <string name="genre_history">история</string>
+    <string name="genre_war">военный</string>
+    <string name="genre_crime">криминал</string>
+    <string name="genre_adventure">приключения</string>
+    <string name="genre_family">семейный</string>
+    <string name="genre_documentary">документальный</string>
+    <string name="genre_kids">детский</string>
+    <string name="genre_music">музыка</string>
+
 </resources>

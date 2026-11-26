@@ -7,8 +7,6 @@ import com.gerasimov_mobile_dev.movieflow.data.remote.common.RatingDto
 import com.squareup.moshi.JsonClass
 
 
-
-
 @JsonClass(generateAdapter = true)
 data class MoviesResponseDto(
     val docs: List<MovieDto>,
@@ -18,7 +16,7 @@ data class MoviesResponseDto(
     val hasNext: Boolean?,
     val hasPrev: Boolean?,
 
-)
+    )
 
 @JsonClass(generateAdapter = true)
 data class MovieDto(

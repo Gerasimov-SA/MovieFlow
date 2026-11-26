@@ -41,8 +41,9 @@ import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.gerasimov_mobile_dev.movieflow.R
 import com.gerasimov_mobile_dev.movieflow.presentation.FavoritesViewModel
 
 
@@ -76,7 +77,7 @@ fun SearchScreen(
                     searchBarState.animateToCollapsed()
                 }
             },
-            placeholder = { Text("Поиск по названию") },
+            placeholder = { Text(stringResource(R.string.search_by_name_hint)) },
             leadingIcon = {
                 if (searchBarState.currentValue == SearchBarValue.Expanded) {
                     IconButton(
@@ -88,13 +89,13 @@ fun SearchScreen(
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Свернуть"
+                            contentDescription = stringResource(R.string.collapse_search_bar_icon_description)
                         )
                     }
                 } else {
                     Icon(
                         imageVector = Icons.Default.Search,
-                        contentDescription = "Поиск"
+                        contentDescription = stringResource(R.string.search_icon_description)
                     )
                 }
             },
@@ -110,7 +111,7 @@ fun SearchScreen(
                         IconButton(onClick = { showFiltersDialog = true }) {
                             Icon(
                                 imageVector = Icons.Default.FilterList,
-                                contentDescription = "Фильтры"
+                                contentDescription = stringResource(R.string.filters_icon_description)
                             )
                         }
                     }

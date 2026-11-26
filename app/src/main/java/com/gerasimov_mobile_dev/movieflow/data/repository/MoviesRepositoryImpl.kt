@@ -7,6 +7,7 @@ import com.gerasimov_mobile_dev.movieflow.data.local.FavoriteMovieDao
 import com.gerasimov_mobile_dev.movieflow.data.local.FavoriteMovieEntity
 import com.gerasimov_mobile_dev.movieflow.data.remote.PoiskKinoApi
 import com.gerasimov_mobile_dev.movieflow.data.remote.FiltersRequestDto
+import com.gerasimov_mobile_dev.movieflow.data.remote.SearchRequestDto
 import com.gerasimov_mobile_dev.movieflow.data.remote.toDomain
 import com.gerasimov_mobile_dev.movieflow.domain.model.Movie
 import com.gerasimov_mobile_dev.movieflow.presentation.state.SearchFilters
@@ -25,15 +26,15 @@ class MoviesRepositoryImpl @Inject constructor(
 ) : MoviesRepository {
 
     override suspend fun getMovieDetails(movieId: Int): Movie {
-        return withContext(Dispatchers.IO){
+        return withContext(Dispatchers.IO) {
             val response = api.getMovieDetails(
                 id = movieId,
                 apiKey = BuildConfig.PK_API_KEY
             )
-            if(response.isSuccessful){
+            if (response.isSuccessful) {
                 val responseDto = response.body() ?: throw RuntimeException("Пустой ответ от API")
                 responseDto.toDomain()
-            }else{
+            } else {
                 throw RuntimeException("Ошибка API: ${response.code()}")
             }
 
@@ -41,14 +42,17 @@ class MoviesRepositoryImpl @Inject constructor(
     }
 
     override fun getMoviesPagingSource(): PagingSource<String, Movie> {
-       return MoviesPagingSource(api)
+        return MoviesPagingSource(api)
     }
+
     override fun filterMoviesPagingSource(filters: SearchFilters): PagingSource<String, Movie> {
         val request = FiltersRequestDto.fromFilters(filters)
         return FiltersMoviesPagingSource(api, request)
     }
+
     override fun searchByNamePagingSource(query: String, limit: Int): PagingSource<Int, Movie> {
-        return SearchByNamePagingSource(api, query, limit)
+        val request = SearchRequestDto(query, limit)
+        return SearchByNamePagingSource(api, request)
     }
 
     override fun getFavorites(): Flow<List<Movie>> =
@@ -68,6 +72,7 @@ class MoviesRepositoryImpl @Inject constructor(
             favoriteMovieDao.upsert(movie.toEntity())
         }
     }
+
     private fun FavoriteMovieEntity.toDomain() = Movie(
         id = id,
         name = name,

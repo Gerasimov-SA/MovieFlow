@@ -1,6 +1,5 @@
 package com.gerasimov_mobile_dev.movieflow.di
 
-import android.util.Log
 import com.gerasimov_mobile_dev.movieflow.data.remote.PoiskKinoApi
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory

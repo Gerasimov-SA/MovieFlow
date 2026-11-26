@@ -14,7 +14,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.gerasimov_mobile_dev.movieflow.R
 import com.gerasimov_mobile_dev.movieflow.presentation.state.SearchFilters
 
 @Composable
@@ -31,13 +33,10 @@ fun ActiveFiltersRow(
         verticalAlignment = Alignment.CenterVertically
     ) {
         filters.type?.let {
-            AssistChip(
-                onClick = {},
-                label = { Text(if (it == "movie") "Фильм" else "Сериал") }
-            )
+            ActiveFilterChip(if (it == SearchFilters.MOVIE_API_VALUE) stringResource(R.string.filters_movie_label) else stringResource(R.string.filters_series_label) )
         }
         filters.genre?.let {
-            AssistChip(onClick = {}, label = { Text(it) })
+            ActiveFilterChip(it)
         }
 
         var yearTo = filters.yearTo
@@ -48,26 +47,34 @@ fun ActiveFiltersRow(
             yearFrom = temp
         }
         val yearText = buildString {
-            if (yearFrom != null) append("от ${yearFrom}")
+            if (yearFrom != null) append(stringResource(R.string.active_filters_from, yearFrom))
             if (yearFrom != null && yearTo != null) append(" ")
-            if (yearTo != null) append("до ${yearTo}")
+            if (yearTo != null) append(stringResource(R.string.active_filters_to, yearTo))
         }
         if (yearText.isNotEmpty()) {
-            AssistChip(onClick = {}, label = { Text("Год $yearText") })
+            ActiveFilterChip(stringResource(R.string.active_filters_year, yearText))
         }
 
 
         val ratingText = buildString {
-            if (filters.minRating != null) append("от ${"%.1f".format(filters.minRating)}")
+            if (filters.minRating != null) append(
+                stringResource(
+                    R.string.active_filters_rating_from,
+                    "%.1f".format(filters.minRating)
+                ))
             if (filters.minRating != null && filters.maxRating != null) append(" ")
-            if (filters.maxRating != null) append("до ${"%.1f".format(filters.maxRating)}")
+            if (filters.maxRating != null) append(
+                stringResource(
+                    R.string.active_filters_rating_to,
+                    "%.1f".format(filters.maxRating)
+                ))
         }
         if (ratingText.isNotEmpty()) {
-            AssistChip(onClick = {}, label = { Text("Рейтинг $ratingText") })
+            ActiveFilterChip(stringResource(R.string.active_filters_rating, ratingText))
         }
 
         Spacer(modifier = Modifier.weight(1f))
-        TextButton(onClick = onClear) { Text("Сбросить") }
+        TextButton(onClick = onClear) { Text(stringResource(R.string.active_filters_reset)) }
     }
 }
 

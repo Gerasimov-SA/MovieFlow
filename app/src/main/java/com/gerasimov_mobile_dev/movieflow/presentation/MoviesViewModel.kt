@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 
-
 @HiltViewModel
 class MoviesViewModel @Inject constructor(
     private val repository: MoviesRepository
@@ -28,6 +27,6 @@ class MoviesViewModel @Inject constructor(
         pagingSourceFactory = { repository.getMoviesPagingSource() }
     ).flow.cachedIn(viewModelScope)
 
-    }
+}
 
 

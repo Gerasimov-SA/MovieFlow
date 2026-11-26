@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.CircularProgressIndicator
@@ -14,10 +15,12 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemKey
+import com.gerasimov_mobile_dev.movieflow.R
 import com.gerasimov_mobile_dev.movieflow.domain.model.Movie
 import com.gerasimov_mobile_dev.movieflow.presentation.screen.MovieItem
 
@@ -38,7 +41,7 @@ fun MovieListContent(
         is LoadState.Error -> {
 
             ErrorScreen(
-                message = refreshState.error.message ?: "Не удалось загрузить фильмы",
+                message = refreshState.error.message ?: stringResource(R.string.error_network),
                 onRetry = { lazyPagingItems.retry() }
             )
         }
@@ -50,7 +53,7 @@ fun MovieListContent(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("Фильмов нет")
+                    Text(stringResource(R.string.movie_empty))
                 }
             } else {
                 // Основной список
@@ -66,7 +69,11 @@ fun MovieListContent(
                         val movie = lazyPagingItems[index]
 
                         if (movie == null) {
-                            MovieItemSkeletonUi()
+                            MovieItemSkeletonUi(modifier = Modifier
+                                .fillMaxWidth()
+                                .height(130.dp)
+                                .padding(8.dp)
+                            )
                         } else {
                             MovieItem(
                                 movie = movie,
@@ -101,7 +108,7 @@ fun MovieListContent(
                                     horizontalArrangement = Arrangement.Center
                                 ) {
                                     TextButton(onClick = { lazyPagingItems.retry() }) {
-                                        Text("Ошибка загрузки. Повторить")
+                                        Text(stringResource(R.string.error_retry_button))
                                     }
                                 }
                             }

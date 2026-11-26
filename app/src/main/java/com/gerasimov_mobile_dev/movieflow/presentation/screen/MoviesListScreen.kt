@@ -1,7 +1,5 @@
 package com.gerasimov_mobile_dev.movieflow.presentation.screen
 
-
-import androidx.compose.animation.animateBounds
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -17,7 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -50,14 +50,16 @@ fun MoviesListScreen(
 
 @Composable
 fun MovieItem(
+    modifier: Modifier = Modifier,
     movie: Movie,
     onClick: () -> Unit,
     isFavorite: Boolean = false,
-    onFavoriteClick: (Movie) -> Unit = {},
-    modifier: Modifier = Modifier,
+    onFavoriteClick: (Movie) -> Unit = {}
 ) {
     Card(
-        modifier = modifier.fillMaxWidth().padding(8.dp)
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(8.dp)
             .clickable { onClick() },
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
@@ -123,25 +125,33 @@ fun MovieItem(
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = movie.name ?: "Без названия",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
+                    text = movie.name ?: stringResource(R.string.movie_name),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                Text(
-                    text = "Дата выхода: ${movie.year ?: "-"}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                movie.year?.let {
+                    Text(
+                        text = stringResource(R.string.movie_year, it),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
                 Spacer(modifier = Modifier.height(4.dp))
 
-                Text(
-                    text = "Жанр: ${movie.genres}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                movie.genres?.let {
+                    Text(
+                        text = stringResource(R.string.movie_genre, it),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
             IconButton(
                 onClick = { onFavoriteClick(movie) },
@@ -151,8 +161,10 @@ fun MovieItem(
             ) {
                 Icon(
                     imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                    contentDescription = "В избранное",
-                    tint = if (isFavorite) MaterialTheme.colorScheme.primary else Color.White.copy(alpha = 0.8f)
+                    contentDescription = stringResource(R.string.add_to_favorites_icon_description),
+                    tint = if (isFavorite) MaterialTheme.colorScheme.primary else Color.White.copy(
+                        alpha = 0.8f
+                    )
                 )
             }
         }

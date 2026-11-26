@@ -1,14 +1,11 @@
 package com.gerasimov_mobile_dev.movieflow.presentation.navigation
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Movie
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavHostController
@@ -16,6 +13,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.gerasimov_mobile_dev.movieflow.R
 import com.gerasimov_mobile_dev.movieflow.presentation.screen.FavoritesScreen
 import com.gerasimov_mobile_dev.movieflow.presentation.screen.MovieDetailsScreen
 import com.gerasimov_mobile_dev.movieflow.presentation.screen.MoviesListScreen
@@ -40,11 +38,13 @@ fun AppNavHost(
                             navController.navigate("movie/$movieId")
                         }
                     )
+
                     Destination.SEARCH -> SearchScreen(
                         onMovieClick = { movieId ->
                             navController.navigate("movie/$movieId")
                         }
                     )
+
                     Destination.FAVORITES -> FavoritesScreen(
                         onMovieClick = { movieId ->
                             navController.navigate("movie/$movieId")
@@ -67,11 +67,12 @@ fun AppNavHost(
 
 enum class Destination(
     val route: String,
-    val label: String,
+    @StringRes val labelRes: Int,
     val icon: ImageVector,
-    val contentDescription: String
+    @StringRes val contentDescriptionRes: Int
 ) {
-    MOVIES("movies", "Главная", Icons.Default.Movie, "Фильмы"),
-    SEARCH("search", "Поиск", Icons.Default.Search, "Поиск"),
-    FAVORITES("favorites", "Избранное", Icons.Default.Favorite, "Избранное")
+    MOVIES("movies", R.string.nav_movies, Icons.Default.Movie, R.string.nav_movies),
+    SEARCH("search", R.string.nav_search, Icons.Default.Search, R.string.nav_search),
+    FAVORITES("favorites", R.string.nav_favorites, Icons.Default.Favorite, R.string.nav_favorites)
+
 }

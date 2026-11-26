@@ -4,6 +4,7 @@ import com.gerasimov_mobile_dev.movieflow.data.remote.common.CountryDto
 import com.gerasimov_mobile_dev.movieflow.data.remote.common.GenreDto
 import com.gerasimov_mobile_dev.movieflow.data.remote.common.RatingDto
 import com.squareup.moshi.JsonClass
+
 @JsonClass(generateAdapter = true)
 data class MovieDetailsDto(
     val id: Int? = null,
@@ -34,6 +35,7 @@ data class ShortImageDto(
     val url: String? = null,
     val previewUrl: String? = null
 )
+
 @JsonClass(generateAdapter = true)
 data class VideosDto(
     val trailers: List<TrailerDto>?

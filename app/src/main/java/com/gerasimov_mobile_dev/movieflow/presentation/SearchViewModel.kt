@@ -13,6 +13,7 @@ import com.gerasimov_mobile_dev.movieflow.presentation.state.SearchFilters
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -48,7 +49,7 @@ class SearchViewModel @Inject constructor(
         )
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+    @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
     val searchFlow: Flow<PagingData<Movie>> = combine(_query, _filters) { q, f ->
         if (q.isNotBlank()) {
             // Поиск по названию
@@ -71,14 +72,16 @@ class SearchViewModel @Inject constructor(
     }
 
     fun clearAll() {
-        _filters.update { it.copy(
-            type = null,
-            genre = null,
-            yearFrom = null,
-            yearTo = null,
-            minRating = null,
-            maxRating = null
-        ) }
+        _filters.update {
+            it.copy(
+                type = null,
+                genre = null,
+                yearFrom = null,
+                yearTo = null,
+                minRating = null,
+                maxRating = null
+            )
+        }
         savedStateHandle["type"] = null
         savedStateHandle["genre"] = null
         savedStateHandle["yearFrom"] = null
@@ -93,7 +96,7 @@ class SearchViewModel @Inject constructor(
     }
 
     fun updateYearRange(from: Int?, to: Int?) {
-        _filters.update {it.copy(yearFrom = from, yearTo = to) }
+        _filters.update { it.copy(yearFrom = from, yearTo = to) }
     }
 
     fun updateRatingRange(min: Double?, max: Double?) {

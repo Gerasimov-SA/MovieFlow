@@ -31,7 +31,8 @@ class MovieDetailsViewModel @Inject constructor(
         MutableStateFlow(DetailsUiState())
     val uiState: StateFlow<DetailsUiState> =
         _uiState.asStateFlow()
-    val movieId: Int = savedStateHandle.get("movieId") ?: 0
+    val movieId: Int = savedStateHandle["movieId"] ?: 0
+
     init {
         if (movieId > 0) {
             getDetails(movieId)
@@ -60,12 +61,18 @@ class MovieDetailsViewModel @Inject constructor(
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                _uiState.update { it.copy(error = e.message ?: "Не удалось загрузить фильм", isLoading = false) }
+                _uiState.update {
+                    it.copy(
+                        error = e.message ?: "Не удалось загрузить фильм",
+                        isLoading = false
+                    )
+                }
             }
         }
 
 
     }
+
     fun refresh() {
         val movieId = savedStateHandle.get<Int>("movieId") ?: 0
         if (movieId > 0) getDetails(movieId)

@@ -1,13 +1,10 @@
 package com.gerasimov_mobile_dev.movieflow.presentation.component
 
-import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.snapping.SnapPosition
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
@@ -26,23 +23,19 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.gerasimov_mobile_dev.movieflow.R
+import com.gerasimov_mobile_dev.movieflow.domain.model.Genre
 import com.gerasimov_mobile_dev.movieflow.presentation.state.SearchFilters
 import java.util.Calendar
-
-private val GENRES = listOf(
-    "драма", "комедия", "триллер", "боевик", "ужасы",
-    "фантастика", "фэнтези", "мелодрама", "детектив", "аниме",
-    "анимация", "биография", "история", "военный", "криминал",
-    "приключения", "семейный", "документальный", "детский", "музыка"
-)
-
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -58,54 +51,77 @@ fun FiltersDialog(
 
     // Диапазон лет: по умолчанию от MIN_YEAR до MAX_YEAR
     val currentYear = remember { Calendar.getInstance().get(Calendar.YEAR) }
-    var yearFromState by remember { mutableStateOf(currentFilters.yearFrom ?: 1900) }
-    var yearToState by remember { mutableStateOf(currentFilters.yearTo ?: currentYear) }
+    var yearFromState by remember {
+        mutableIntStateOf(
+            currentFilters.yearFrom ?: SearchFilters.MIN_YEAR
+        )
+    }
+    var yearToState by remember { mutableIntStateOf(currentFilters.yearTo ?: currentYear) }
 
     // Диапазон рейтинга: 0.0 — 10.0
     var ratingStart by remember {
-        mutableStateOf(currentFilters.minRating?.toFloat() ?: 0f)
+        mutableFloatStateOf(currentFilters.minRating?.toFloat() ?: 0f)
     }
     var ratingEnd by remember {
-        mutableStateOf(currentFilters.maxRating?.toFloat() ?: 10f)
+        mutableFloatStateOf(currentFilters.maxRating?.toFloat() ?: 10f)
     }
 
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Фильтры") },
+        title = { Text(stringResource(R.string.filters_title)) },
         text = {
             Column(
                 modifier = Modifier.verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
 
-                Text("Тип", style = MaterialTheme.typography.titleSmall)
+                Text(
+                    stringResource(R.string.filters_type_label),
+                    style = MaterialTheme.typography.titleSmall
+                )
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+
                     FilterChip(
-                        selected = type == "movie",
-                        onClick = { type = if (type == "movie") null else "movie" },
-                        label = { Text("Фильм") }
+                        selected = type == SearchFilters.MOVIE_API_VALUE,
+                        onClick = {
+                            type =
+                                if (type == SearchFilters.MOVIE_API_VALUE) null else SearchFilters.MOVIE_API_VALUE
+                        },
+                        label = { Text(stringResource(R.string.filters_movie_label)) }
                     )
                     FilterChip(
-                        selected = type == "tv-series",
-                        onClick = { type = if (type == "tv-series") null else "tv-series" },
-                        label = { Text("Сериал") }
+                        selected = type == SearchFilters.SERIES_API_VALUE,
+                        onClick = {
+                            type =
+                                if (type == SearchFilters.SERIES_API_VALUE) null else SearchFilters.SERIES_API_VALUE
+                        },
+                        label = { Text(stringResource(R.string.filters_series_label)) }
                     )
                 }
 
                 // --- Жанр (выпадающий список) ---
-                Text("Жанр", style = MaterialTheme.typography.titleSmall)
+                Text(
+                    stringResource(R.string.movie_genre, ""),
+                    style = MaterialTheme.typography.titleSmall
+                )
                 ExposedDropdownMenuBox(
                     expanded = genreMenuExpanded,
                     onExpandedChange = { genreMenuExpanded = it }
                 ) {
+                    val fillMaxWidth = Modifier
+                        .fillMaxWidth()
                     OutlinedTextField(
-                        value = genre ?: "любой",
+                        value = genre
+                            ?.let { Genre.fromApiValue(it) }
+                            ?.let { stringResource(it.labelRes) }
+                            ?: stringResource(R.string.filters_any),
                         onValueChange = {},
                         readOnly = true,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .menuAnchor(),
+                        modifier = fillMaxWidth.menuAnchor(
+                            ExposedDropdownMenuAnchorType.PrimaryNotEditable,
+                            !genreMenuExpanded
+                        ),
                         trailingIcon = {
                             ExposedDropdownMenuDefaults.TrailingIcon(expanded = genreMenuExpanded)
                         }
@@ -116,17 +132,17 @@ fun FiltersDialog(
                         onDismissRequest = { genreMenuExpanded = false },
                     ) {
                         DropdownMenuItem(
-                            text = { Text("любой") },
+                            text = { Text(stringResource(R.string.filters_any)) },
                             onClick = {
                                 genre = null
                                 genreMenuExpanded = false
                             }
                         )
-                        GENRES.forEach { g ->
+                        Genre.GENRES.forEach { g ->
                             DropdownMenuItem(
-                                text = { Text(g) },
+                                text = { Text(stringResource(g.labelRes)) },
                                 onClick = {
-                                    genre = g
+                                    genre = g.apiValue
                                     genreMenuExpanded = false
                                 }
                             )
@@ -136,7 +152,7 @@ fun FiltersDialog(
 
 
                 Text(
-                    "Год",
+                    stringResource(R.string.movie_year, ""),
                     style = MaterialTheme.typography.titleSmall
                 )
 
@@ -155,7 +171,11 @@ fun FiltersDialog(
 
                 // --- Рейтинг (RangeSlider) ---
                 Text(
-                    "Рейтинг: ${"%.1f".format(ratingStart)} — ${"%.1f".format(ratingEnd)}",
+                    stringResource(
+                        R.string.filters_rating_from_to,
+                        "%.1f".format(ratingStart),
+                        "%.1f".format(ratingEnd)
+                    ),
                     style = MaterialTheme.typography.titleSmall
                 )
                 RangeSlider(
@@ -186,17 +206,17 @@ fun FiltersDialog(
                         SearchFilters(
                             type = type,
                             genre = genre,
-                            yearFrom = yearFromState,
-                            yearTo = yearToState,
-                            minRating =  ratingStart.toDouble(),
-                            maxRating =  ratingEnd.toDouble()
+                            yearFrom = yearFromState.takeIf { it != SearchFilters.MIN_YEAR },
+                            yearTo = yearToState.takeIf { it != currentYear },
+                            minRating = ratingStart.takeIf { it > 0f }?.toDouble(),
+                            maxRating = ratingEnd.takeIf { it < 10f }?.toDouble()
                         )
                     )
                 }
-            ) { Text("Применить") }
+            ) { Text(stringResource(R.string.filters_apply_label)) }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Отмена") }
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.filters_cancel_label)) }
         }
     )
 }
@@ -208,24 +228,25 @@ fun YearPickerRow(
     toYear: Int?,
     onFromYearChange: (Int) -> Unit,
     onToYearChange: (Int) -> Unit,
-    currentYear:Int
+    currentYear: Int
 ) {
 
-    val yearsRange = (1900..currentYear).toList()
+    val yearsRange = (SearchFilters.MIN_YEAR..currentYear).toList()
 
     Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
         // От года
         var fromExpanded by remember { mutableStateOf(false) }
-        ExposedDropdownMenuBox(modifier = Modifier.weight(1f),
+        ExposedDropdownMenuBox(
+            modifier = Modifier.weight(1f),
             expanded = fromExpanded,
-            onExpandedChange = { fromExpanded = it}
+            onExpandedChange = { fromExpanded = it }
         ) {
             OutlinedTextField(
                 modifier = Modifier.menuAnchor(
                     type = ExposedDropdownMenuAnchorType.PrimaryNotEditable,
                     enabled = !fromExpanded
                 ),
-                value = fromYear?.toString() ?: "любой",
+                value = fromYear?.toString() ?: stringResource(R.string.filters_any),
                 onValueChange = {},
                 readOnly = true,
                 colors = ExposedDropdownMenuDefaults.textFieldColors(
@@ -236,20 +257,14 @@ fun YearPickerRow(
                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = fromExpanded)
                 },
 
-                label = { Text("От") }
+                label = { Text(stringResource(R.string.filters_from_label)) }
             )
             DropdownMenu(
                 expanded = fromExpanded,
                 onDismissRequest = { fromExpanded = false },
                 modifier = Modifier.height(240.dp)
             ) {
-                DropdownMenuItem(
-                    text = { Text("любой") },
-                    onClick = {
-                        onFromYearChange(1900)
-                        fromExpanded = false
-                    }
-                )
+
                 yearsRange.sortedDescending().forEach { year ->
                     DropdownMenuItem(
                         text = { Text(year.toString()) },
@@ -264,16 +279,17 @@ fun YearPickerRow(
 
         // До года
         var toExpanded by remember { mutableStateOf(false) }
-        ExposedDropdownMenuBox(modifier = Modifier.weight(1f),
+        ExposedDropdownMenuBox(
+            modifier = Modifier.weight(1f),
             expanded = toExpanded,
             onExpandedChange = { toExpanded = it }
         ) {
             OutlinedTextField(
                 modifier = Modifier.menuAnchor(
                     type = ExposedDropdownMenuAnchorType.PrimaryNotEditable,
-                    enabled = !fromExpanded
+                    enabled = !toExpanded
                 ),
-                value = toYear?.toString() ?: "любой",
+                value = toYear?.toString() ?: stringResource(R.string.filters_any),
                 onValueChange = {},
                 readOnly = true,
 
@@ -284,31 +300,24 @@ fun YearPickerRow(
                 trailingIcon = {
                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = toExpanded)
                 },
-                label = { Text("До") }
+                label = { Text(stringResource(R.string.filters_to_label)) }
             )
             DropdownMenu(
                 expanded = toExpanded,
                 onDismissRequest = { toExpanded = false },
                 modifier = Modifier.height(240.dp)
             ) {
-                DropdownMenuItem(
-                    text = { Text("любой") },
-                    onClick = {
-                        onToYearChange(currentYear)
-                        toExpanded = false
-                    }
-                )
+
                 yearsRange.sortedDescending().forEach { year ->
 
-                    val enabled = toYear == null || year >= (fromYear ?: year)
+                    val enabled = fromYear == null || year > fromYear
                     if (enabled) {
                         DropdownMenuItem(
                             text = { Text(year.toString()) },
                             onClick = {
                                 onToYearChange(year)
                                 toExpanded = false
-                            },
-                            enabled = enabled
+                            }
                         )
                     }
                 }

@@ -15,7 +15,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Icon
@@ -29,12 +29,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.gerasimov_mobile_dev.movieflow.R
 import com.gerasimov_mobile_dev.movieflow.domain.model.Movie
 import com.gerasimov_mobile_dev.movieflow.presentation.MovieDetailsViewModel
 import com.gerasimov_mobile_dev.movieflow.presentation.component.ErrorScreen
@@ -123,8 +125,8 @@ private fun MovieDetailsContent(
                     .align(Alignment.TopStart)
             ) {
                 Icon(
-                    imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Назад",
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = stringResource(R.string.arrow_back_icon_description),
                     tint = Color.White
                 )
 
@@ -138,7 +140,9 @@ private fun MovieDetailsContent(
             ) {
                 Icon(
                     imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                    contentDescription = if (isFavorite) "Убрать из избранного" else "Добавить в избранное",
+                    contentDescription = if (isFavorite) stringResource(R.string.remove_from_favorites_icon_description) else stringResource(
+                        R.string.add_to_favorites_icon_description
+                    ),
                     tint = if (isFavorite) MaterialTheme.colorScheme.primary else Color.White
                 )
             }
@@ -169,7 +173,7 @@ private fun MovieDetailsContent(
                     verticalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     Text(
-                        text = movie.name ?: "Без названия",
+                        text = movie.name ?: stringResource(R.string.movie_name),
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold
                     )
@@ -181,13 +185,13 @@ private fun MovieDetailsContent(
                         )
                     }
                     if (movie.isSeries == true) {
-                        Text("Сериал", fontSize = 14.sp, color = Color.Gray)
+                        Text(stringResource(R.string.series), fontSize = 14.sp, color = Color.Gray)
                     }
                     // Рейтинг
-                    if ( movie.rating > 0) {
+                    if (movie.rating > 0) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
-                                text = "★ ${String.format("%.1f", movie.rating)}",
+                                text = stringResource(R.string.rating_with_star, movie.rating),
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color(0xFFFFA000)
@@ -197,7 +201,7 @@ private fun MovieDetailsContent(
 
                     if (movie.movieLength != null) {
                         Text(
-                            text = "${movie.movieLength} мин",
+                            text = stringResource(R.string.movie_length_minutes, movie.movieLength),
                             fontSize = 14.sp,
                             color = Color.Gray
                         )
@@ -205,7 +209,7 @@ private fun MovieDetailsContent(
 
                     if (!movie.ageRating.isNullOrBlank()) {
                         Text(
-                            text = "${movie.ageRating}+",
+                            text = stringResource(R.string.age_rating, movie.ageRating),
                             fontSize = 14.sp,
                             color = Color.Gray
                         )
@@ -217,12 +221,15 @@ private fun MovieDetailsContent(
 
 
             if (!movie.genres.isNullOrBlank()) {
-                InfoLine(title = "Жанры", value = movie.genres)
+                InfoLine(title = stringResource(R.string.details_movie_genre), movie.genres)
             }
 
 
             if (!movie.countries.isNullOrBlank()) {
-                InfoLine(title = "Страны", value = movie.countries)
+                InfoLine(
+                    title = stringResource(R.string.details_movie_countries),
+                    value = movie.countries
+                )
             }
 
 
@@ -230,7 +237,7 @@ private fun MovieDetailsContent(
             if (!desc.isNullOrBlank()) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = "Описание",
+                    text = stringResource(R.string.movie_description_label),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -239,10 +246,10 @@ private fun MovieDetailsContent(
             }
 
 
-            if (!movie.actors.isNullOrBlank() && movie.actors != "—") {
+            if (!movie.actors.isNullOrBlank()) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = "В ролях",
+                    text = stringResource(R.string.movie_actors_label),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -254,14 +261,14 @@ private fun MovieDetailsContent(
             if (movie.trailers.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = "Трейлеры",
+                    text = stringResource(R.string.trailers_label),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 movie.trailers.forEach { trailer ->
                     Text(
-                        text = "▶ ${trailer.name ?: "Трейлер"}",
+                        text = "▶ ${trailer.name ?: stringResource(R.string.movie_trailer_default_name)}",
                         fontSize = 15.sp,
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier

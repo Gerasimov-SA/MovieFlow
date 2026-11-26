@@ -4,6 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.gerasimov_mobile_dev.movieflow.BuildConfig
 import com.gerasimov_mobile_dev.movieflow.data.remote.PoiskKinoApi
+import com.gerasimov_mobile_dev.movieflow.data.remote.SearchRequestDto
 import com.gerasimov_mobile_dev.movieflow.data.remote.toDomain
 import com.gerasimov_mobile_dev.movieflow.domain.model.Movie
 import kotlinx.coroutines.Dispatchers
@@ -11,8 +12,7 @@ import kotlinx.coroutines.withContext
 
 class SearchByNamePagingSource(
     private val api: PoiskKinoApi,
-    private val query: String,
-    private val limit: Int
+    private val request: SearchRequestDto
 ) : PagingSource<Int, Movie>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
@@ -23,16 +23,17 @@ class SearchByNamePagingSource(
 
                 val response = api.searchMovies(
                     apiKey = BuildConfig.PK_API_KEY,
-                    query = query,
+                    query = request.query,
                     page = page,
-                    limit = limit
+                    limit = request.limit
                 )
 
                 if (!response.isSuccessful) {
-                    return@withContext LoadResult.Error(Exception("Ошибка API: \${response.code()}"))
+                    return@withContext LoadResult.Error(Exception("Ошибка API: ${response.code()}"))
                 }
 
-                val body = response.body() ?: return@withContext LoadResult.Error(Exception("Пустой ответ"))
+                val body = response.body()
+                    ?: return@withContext LoadResult.Error(Exception("Пустой ответ"))
 
                 val items = body.docs.map { it.toDomain() }
 

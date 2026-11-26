@@ -24,8 +24,9 @@ interface PoiskKinoApi {
         @Query("rating.kp") ratingKp: List<String>? = null,
 
         ): Response<MoviesResponseDto>
+
     @GET("v1.5/movie/{id}")
-        suspend fun getMovieDetails(
+    suspend fun getMovieDetails(
         @Path("id") id: Int,
         @Header("X-API-KEY") apiKey: String
     ): Response<MovieDetailsDto>

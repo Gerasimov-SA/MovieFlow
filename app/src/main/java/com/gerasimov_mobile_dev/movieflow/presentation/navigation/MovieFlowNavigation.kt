@@ -12,6 +12,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.rememberNavController
 
 
@@ -40,10 +41,10 @@ fun MovieFlowNavigation() {
                         icon = {
                             Icon(
                                 destination.icon,
-                                contentDescription = destination.contentDescription
+                                contentDescription = stringResource(destination.contentDescriptionRes)
                             )
                         },
-                        label = { Text(destination.label) }
+                        label = { Text(stringResource(destination.labelRes) )}
                     )
                 }
             }
