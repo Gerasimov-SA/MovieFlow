@@ -9,6 +9,7 @@ import com.gerasimov_mobile_dev.movieflow.data.remote.toDomain
 import com.gerasimov_mobile_dev.movieflow.domain.model.Movie
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.cancellation.CancellationException
 
 class SearchByNamePagingSource(
     private val api: PoiskKinoApi,
@@ -45,6 +46,8 @@ class SearchByNamePagingSource(
                     prevKey = null,
                     nextKey = nextKey
                 )
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 LoadResult.Error(e)
             }

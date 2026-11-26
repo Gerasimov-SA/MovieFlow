@@ -50,7 +50,7 @@ class FiltersMoviesPagingSource @Inject constructor(
 
                 LoadResult.Page(
                     data = items,
-                    prevKey = cursor,
+                    prevKey = null,
                     nextKey = nextKey
                 )
             } catch (e: CancellationException) {

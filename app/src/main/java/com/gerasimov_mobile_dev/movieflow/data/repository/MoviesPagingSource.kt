@@ -32,7 +32,7 @@ class MoviesPagingSource @Inject constructor(
                     return@withContext LoadResult.Error(Exception("Ошибка API при загрузке страницы: ${response.code()}"))
                 }
                 val body = response.body() ?: return@withContext LoadResult.Error(
-                    Exception("Пустой ответ от API на странице \$page")
+                    Exception("Пустой ответ от API на странице $cursor")
                 )
                 val items = body.docs.map { it.toDomain() }
 
