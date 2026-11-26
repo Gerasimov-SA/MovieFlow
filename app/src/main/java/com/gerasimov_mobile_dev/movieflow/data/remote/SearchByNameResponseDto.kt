@@ -2,6 +2,8 @@ package com.gerasimov_mobile_dev.movieflow.data.remote
 
 import com.gerasimov_mobile_dev.movieflow.data.remote.common.PosterDto
 import com.squareup.moshi.JsonClass
+import com.gerasimov_mobile_dev.movieflow.data.remote.common.GenreDto
+import com.gerasimov_mobile_dev.movieflow.data.remote.common.RatingDto
 
 @JsonClass(generateAdapter = true)
 data class SearchByNameResponseDto(
@@ -28,11 +30,6 @@ data class SearchMovieDto(
 @JsonClass(generateAdapter = true)
 data class NameDto(val name: String?)
 
-@JsonClass(generateAdapter = true)
-data class RatingDto(val kp: Double?)
-
-@JsonClass(generateAdapter = true)
-data class GenreDto(val name: String?)
 
 @JsonClass(generateAdapter = true)
 data class ReleaseYearDto(val start: Int?, val end: Int?)
