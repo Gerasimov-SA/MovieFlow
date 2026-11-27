@@ -1,4 +1,4 @@
-import com.android.tools.r8.internal.pk3
+
 import org.gradle.kotlin.dsl.testImplementation
 import java.util.Properties
 
@@ -31,7 +31,7 @@ android {
         //return empty key in case something goes wrong
         val pkKey = properties.getProperty("pk.api.key") ?: ""
 
-        buildConfigField("String", "PK_API_KEY", "$pkKey")
+        buildConfigField("String", "PK_API_KEY", "\"$pkKey\"")
     }
 
 
