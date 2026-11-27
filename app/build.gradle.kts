@@ -34,11 +34,27 @@ android {
         buildConfigField("String", "PK_API_KEY", "\"$pkKey\"")
     }
 
+    val keystoreProperties = Properties()
+    val keystoreFile = rootProject.file("keystore.properties")
+    if (keystoreFile.exists()) {
+        keystoreProperties.load(keystoreFile.inputStream())
+    }
+    signingConfigs {
+        create("release") {
+            if (keystoreFile.exists()) {
+                storeFile = file(keystoreProperties["storeFile"] as String)
+                storePassword = keystoreProperties["storePassword"] as String
+                keyAlias = keystoreProperties["keyAlias"] as String
+                keyPassword = keystoreProperties["keyPassword"] as String
+            }
+        }
+    }
 
     buildTypes {
         release {
             optimization {
                 enable = false
+                signingConfig = signingConfigs.getByName("release")
             }
         }
     }

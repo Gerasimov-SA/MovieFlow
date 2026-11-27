@@ -14,3 +14,10 @@
 .cxx
 local.properties
 /apikeys.properties
+keystore.properties
+*.jks
+*.keystore
+/app/release
+*.apk
+
+
