@@ -66,6 +66,7 @@ fun SearchScreen(
     LaunchedEffect(textFieldState.text) {
         viewModel.setQuery(textFieldState.text.toString())
     }
+    LaunchedEffect(currentQuery) { if (currentQuery.isNotBlank()) viewModel.clearAll() }
 
     val inputField = @Composable {
         SearchBarDefaults.InputField(
@@ -144,7 +145,6 @@ fun SearchScreen(
                     onFavoriteClick = { movie -> favoritesViewModel.toggleFavorite(movie) }
                 )
             } else if (currentQuery.isNotBlank()) {
-                viewModel.clearAll()
                 MovieListContent(
                     lazyPagingItems = lazyPagingItems,
                     onMovieClick = onMovieClick,
